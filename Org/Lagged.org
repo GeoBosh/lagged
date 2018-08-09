@@ -60,7 +60,7 @@ The following convenience function is used to infer a suitable "Lagged" class fo
 
 
 This is the initialisation method. Note that it gets rid of recursive "FlexibleLagged" data
-slots, i.e. the data slot is of the returned object is "Lagged" but not "FlexibleLagged".
+slots, i.e. the data slot of the returned object is "Lagged" but not "FlexibleLagged".
 This probably should be taken care of by a validation method.
 #+BEGIN_SRC R
 setMethod("initialize", "FlexibleLagged",
@@ -193,7 +193,7 @@ Indexing with "[[" returns the value for the specified lag. This is the recommen
 extract the value at a single index.
 
 This defines a default method. For efficiency specific classes can define versions that avoid
-calling the generic "[". If multi-seasons are supported the check for length equal to one
+calling the generic "[[". If multi-seasons are supported the check for length equal to one
 should be adapted accordingly.
 #+BEGIN_SRC R
 setMethod("[[", c(x = "Lagged", i = "numeric"),
@@ -204,7 +204,6 @@ setMethod("[[", c(x = "Lagged", i = "numeric"),
                   stop("length of argument `i' must be equal to one")
           }
           )
-
 #+END_SRC
 Note the use of ~drop = TRUE~.
 
@@ -231,10 +230,14 @@ Operations in the ~Ops~ group involving lagged objects are defined "naturally" o
 data. However, they are more restrictive than base R's conventions for atomic objects and do
 not follow the recycling rules.
 
-The "Ops" methods return values from one of the core lagged classes, even if the objects are
-from classes inheriting from "Lagged". The reason is that, for example, the difference
-between autocovariance functions is not necessarilly autocovariance, but it is still a lagged
-object. It would be very confusing if the result was not guaranteed to be "Lagged".
+The binary "Ops" methods return values from one of the core lagged classes, even if the
+objects are from classes inheriting from "Lagged". The reason is that, for example, the
+difference between autocovariance functions is not necessarilly autocovariance, but it is
+still a lagged object. It would be very confusing if the result was not guaranteed to be
+"Lagged".  Also, if a policy of preserving the actual class were to be adopted, what wwould
+be the rule for the class of the result from binary operations between lagged objects from
+different classes (it seems not possible to have a simple one). 
+
 
 Of course, methods defined for subclasses of lagged objects may preserve the actual classes
 when appropriate but should not introduce confusion on indexing.
@@ -260,7 +263,20 @@ Operations between two lagged objects give a lagged object. If their ~maxLag()~ 
 are different, the shorter data slot is extended with NA's before applying the binary
 operation.
 
-*** "Ops" involving "Lagged"
+
+**** "Ops" involving "Lagged"
+
+The unary operators preserve the class of the object:
+#+BEGIN_SRC R
+setMethod("Ops", c(e1 = "Lagged", e2 = "missing"),
+          function(e1){
+                    # wrk <- callGeneric(e1@data)
+                    # clname <- whichLagged(e1)
+                    # new(clname, data = wrk)
+              e1@data <- callGeneric(e1@data)
+              e1
+          })
+#+END_SRC
 
 #+BEGIN_SRC R
 ## TODO: do not allow mixing Lagged1d with Lagged2d, etc.?
@@ -282,7 +298,8 @@ setMethod("Ops", c(e1 = "Lagged", e2 = "Lagged"),
 satisfactory, see ~whichLagged()~ which encapsulates it. Also, forbid mixing 1d with 2d,
 etc.?
 
-When only one of the object is "Lagged", the operations are defined if:
+When only one of the object is "Lagged", the operations are defined if the following cases:
+
     1. the length of the other object is equal to the length of the data part of the "Lagged"
        object,
     2. the other object is of length one,
@@ -334,7 +351,8 @@ setMethod("Ops", c(e1 = "vector", e2 = "Lagged"),
           })
 #+END_SRC
 
-*** "Ops" involving "FlexibleLagged"
+
+**** "Ops" involving "FlexibleLagged"
 
 Operations involving "FlexibleLagged" objects use those defined for "Lagged" by operating on
 the data slot (which is "Lagged").
@@ -368,6 +386,41 @@ setMethod("Ops", c(e1 = "vector", e2 = "FlexibleLagged"),
 
 *TODO:* methods for "matrix", "array", these probably should be for specific "Lagged"
 subclasses, like "Lagged2d".
+
+
+*** "Math" and "Math2" group methods
+
+"Math" and "Math2" methods return the object with its data part transformed by the
+corresponding function. 
+
+*TODO:* Does this work for ~FlexibleLagged~?
+#+BEGIN_SRC R
+setMethod("Math", c(x = "Lagged"),
+          function(x){
+              x@data <- callGeneric(x@data)
+              x
+          })
+#+END_SRC
+
+
+#+BEGIN_SRC R
+setMethod("Math2", c(x = "Lagged"),
+          function(x, digits){
+              x@data <- callGeneric(x@data, digits)
+              x
+          })
+#+END_SRC
+
+
+*** "Summary" group methods
+
+The "Summary" methods operate on the data part of the "Lagged" object.
+#+BEGIN_SRC R
+setMethod("Summary", c(x = "Lagged"),
+          function(x, ..., na.rm = FALSE){
+              callGeneric(x@data)
+          })
+#+END_SRC
 
 
 ** S3 methods for as.vector() and related functions for "Lagged"
@@ -414,6 +467,20 @@ maxLag <- function(object, ...){
 }
 
 setGeneric("maxLag")
+#+END_SRC
+
+#+BEGIN_SRC R
+setGeneric("maxLag<-", def = function(object, ..., value){ standardGeneric("maxLag<-") } )
+#+END_SRC
+
+*TODO:* Do we need a separate method for "FlexibleLagged"?
+#+BEGIN_SRC R
+setReplaceMethod("maxLag", "Lagged",
+                 function(object, ..., value){
+                     object@data <- object[0:value]
+                     object
+                 }
+                 )
 #+END_SRC
 
 The convention for "Lagged" objects is that the last dimension carries the lag.  So, the
@@ -511,6 +578,17 @@ setMethod("whichLagged", c(x = "Lagged3d", y = "missing"), function(x) "Lagged3d
 
 ** Methods for "[<-"
 
+Missing index is equivalent to replacing all data: 
+#+BEGIN_SRC R
+setReplaceMethod("[", c(x = "Lagged", i = "missing"),
+          function(x, i, value){
+              x[0:maxLag(x)] <- value
+              x
+          })
+#+END_SRC
+The above method just calls "[<-" again, so it applies to any lagged objects.
+
+The methods which work on the data, need to know their layout, so we need several methods.
 #+BEGIN_SRC R
 setReplaceMethod("[", c(x = "Lagged1d", i = "numeric"),
           function(x, i, value){
@@ -562,9 +640,11 @@ setMethod("show", "Lagged1d",
               .reportClassName(object, "Lagged1d")
               cat("Slot *data*:", "\n")
 
-              x <- object@data
-              if(is.null(names(x)) || length(names(x)) == 0)
-                  names(x) <- paste0("Lag_", 0:(length(x) - 1))
+              ## 2017-05-24 was:
+              ##     x <- object@data
+              ##     if(is.null(names(x)) || length(names(x)) == 0)
+              ##         names(x) <- paste0("Lag_", 0:(length(x) - 1))
+              x <- dataWithLagNames(object)
               print(x)
               ## cat("\n")
           }
@@ -582,12 +662,13 @@ setMethod("show", "Lagged3d",
               .reportClassName(object, "Lagged3d")
               cat("Slot *data*:", "\n")
 
-              x <- object@data
-              if(is.null(dimnames(x)) || length(dimnames(x)) == 0){
-                  d <- dim(x)
-                  dimnames(x) <- list(rep("", d[1]), rep("", d[2]),
-                                      paste0("Lag_", 0:(d[3] - 1)) )
-              }
+              ## x <- object@data
+              ## if(is.null(dimnames(x)) || length(dimnames(x)) == 0){
+              ##     d <- dim(x)
+              ##     dimnames(x) <- list(rep("", d[1]), rep("", d[2]),
+              ##                         paste0("Lag_", 0:(d[3] - 1)) )
+              ## }
+              x <- dataWithLagNames(object)
               print(x)
               ## cat("\n")
           }
@@ -676,3 +757,34 @@ Lagged <- function(data, ...){
 #+END_SRC
 
 *TODO:* Tests!
+
+* New
+
+The functions in this section are temporarily here during development and should be move to
+more appropriate places eventually.
+
+**
+
+provideDimnames is new in R-3.0.0
+
+=dataWithLagNames(object)= is a convenience function which works like
+=object[]= but also ensures that the lag dimension has names. It is exported for use in other
+packages. Occasionally users may wish to use it too.
+#+BEGIN_SRC R
+dataWithLagNames <- function(object, prefix = "Lag_"){
+    x <- object[]
+    if(is.array(x)){
+        d <- dim(x)
+        nd <- length(d)
+
+        xwithnams <- provideDimnames(x, base = list(""), unique = FALSE)
+        dimnames(xwithnams)[[nd]] <- paste0(prefix, 0:(d[nd] - 1))
+        xwithnams
+    }else{
+        if(is.null(names(x)) || length(names(x)) == 0)
+            names(x) <- paste0(prefix, 0:(length(x) - 1))
+        x
+    }
+}
+#+END_SRC
+

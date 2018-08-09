@@ -46,7 +46,7 @@ acf2Lagged(x)
 lh_acf <- acf2Lagged(acf(lh))
 
 lh_acf[0:5]
-acf(lh)$acf[1 + 0:5] # same
+acf(lh, plot = FALSE)$acf[1 + 0:5] # same
 
 acf(ts.union(mdeaths, fdeaths))$acf[15,,]
 

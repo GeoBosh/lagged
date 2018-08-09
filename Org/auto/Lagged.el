@@ -11,7 +11,6 @@
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
-   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "url")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (TeX-run-style-hooks
     "latex2e"
@@ -32,22 +31,30 @@
     "capt-of"
     "hyperref")
    (LaTeX-add-labels
-    "sec:orgd054dcf"
-    "sec:org8f6db68"
-    "sec:org3f32f1c"
-    "sec:orgdb6f89b"
-    "sec:org202a737"
-    "sec:org4c07da2"
-    "sec:orgb694449"
-    "sec:org0625d79"
-    "sec:org6498f77"
-    "sec:orgd96946a"
-    "sec:org888f20a"
-    "sec:org003dcb3"
-    "sec:org532abca"
-    "sec:org5438680"
-    "sec:orgeae8383"
-    "sec:orgfad94c7"
-    "sec:orge77c1a5"
-    "sec:org52539aa")))
+    "sec:org5ef7378"
+    "sec:orga857797"
+    "sec:org31709fe"
+    "sec:org75ae41e"
+    "sec:org77a9231"
+    "sec:org2aa0dd7"
+    "sec:org900e3cd"
+    "sec:orga8c0abe"
+    "sec:orgb4d3658"
+    "sec:orgc00b8eb"
+    "sec:org2109177"
+    "sec:orgb0cb9c9"
+    "sec:org7900752"
+    "sec:orgdd38f87"
+    "sec:orgc8c11d8"
+    "sec:org08cf90c"
+    "sec:orgf08c685"
+    "sec:org1ebdd3d"
+    "sec:org58bfcbf"
+    "sec:org36a85c4"
+    "sec:org95242a5")
+   (LaTeX-add-environments
+    '("eptblFigure" LaTeX-env-args ["argument"] 0)
+    '("epfigFigure" LaTeX-env-args ["argument"] 0)
+    '("epFigure" LaTeX-env-args ["argument"] 0)))
+ :latex)
 

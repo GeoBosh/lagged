@@ -48,7 +48,9 @@ maxLag(object, \dots)
 }
 }}}
 %\note{}
-%\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\seealso{
+  \code{\link{maxLag<-}}
+}
 %\examples{
 %}
 \keyword{methods}
