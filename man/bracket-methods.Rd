@@ -7,6 +7,9 @@
 \alias{[,Lagged2d,numeric-method}
 \alias{[,Lagged3d,numeric-method}
 \alias{[,Lagged,missing-method}
+\alias{[,ANY,ANY-method}
+\alias{[,nonStructure,ANY-method}
+\alias{[,slMatrix,ANY-method}
 \title{Methods for subsetting defined in package 'lagged'}
 \description{Methods for subsetting  defined in package 'lagged'.}
 \section{Methods}{
@@ -56,5 +59,8 @@
     \item{\code{signature(x = "Lagged", i = "missing")}}{
       %%  ~~describe this method here~~
     }
-}}
+    \item{\code{signature(x = "slMatrix", i = "ANY")}}{{
+	Describe any discrepancy with the Lagged methods.
+      }
+}}}
 \keyword{methods}

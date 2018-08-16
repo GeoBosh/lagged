@@ -1,3 +1,8 @@
+Changes in Version 0.2-0
+   - moved here slMatrix function and class from 'pcts'.
+   - moved here declarations of 'nSeasons' and 'nSeasons<-' from 'sarima'.
+   - numerous changes to the documentation.
+
 Changes in Version 0.1-2
    - added "Lagged" methods for "Maths" group generic.
    - added "Lagged" methods for "Summary" group generic.

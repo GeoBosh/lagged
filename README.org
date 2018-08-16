@@ -1,0 +1,21 @@
+#+PROPERTY: header-args:R   :cache yes :session readme-r :results value :exports both
+#+OPTIONS: toc:nil
+
+R package 'lagged' provides classes and methods for objects, like autocovariances, whose
+natural indexing starts from zero.
+
+* Installing lagged
+
+The [[https://cran.r-project.org/package=lagged][latest stable version]] is on CRAN. 
+#+BEGIN_EXAMPLE
+install_packages("lagged")
+#+END_EXAMPLE
+The vignette shipping with the package gives illustrative examples.
+=vignette("Guide_lagged", package = "lagged")=.
+
+You can install the [[https://github.com/GeoBosh/lagged][development version]] of =lagged= from Github:
+#+BEGIN_EXAMPLE
+library(devtools)
+install_github("GeoBosh/lagged")
+#+END_EXAMPLE
+
