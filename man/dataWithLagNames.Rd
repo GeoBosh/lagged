@@ -20,6 +20,9 @@ dataWithLagNames(object, prefix = "Lag_")
   \code{dataWithLagNames()} extracts the data part from a lagged object and
   gives names to the lag dimension, if it is not already named.
 
+  This function is mainly used for programming, particularly in
+  \code{show()} methods for lagged objects..
+
 }
 \value{
   The data part with names as described in Details.

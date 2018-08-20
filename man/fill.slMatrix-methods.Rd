@@ -5,7 +5,7 @@
 \alias{fill.slMatrix,ANY,ANY-method}
 \alias{fill.slMatrix,matrix,function-method}
 \alias{fill.slMatrix,matrix,matrix-method}
-\title{ Methods for Function fill.slMatrix in Package `pcts' }
+\title{ Methods for Function fill.slMatrix in Package `sarima' }
 \description{
   Provides various ways for filling a matrix object with values
   according to the conventions of class slMatrix. This is a generic
@@ -79,8 +79,8 @@ ISSN 0167-9473, \url{http://dx.doi.org/10.1016/j.csda.2011.07.001}, \url{http://
 # :todo:
 }
 \keyword{methods}
-\keyword{seasonLag}
-
+%\keyword{seasonLag}
+\keyword{internal}
 
 
 
