@@ -14,3 +14,4 @@ Imports: methods
 License: GPL (>= 2)
 LazyLoad: yes
 Collate: lagged.R utils.R pc20slMatrix.r
+RoxygenNote: 6.1.0
