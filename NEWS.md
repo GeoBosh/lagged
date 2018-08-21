@@ -1,3 +1,8 @@
+# lagged 0.2-1
+
+* Bug-fix:  `nSeasons()` and `nSeasons<-()`are now exported.
+
+
 # lagged 0.2-0 (CRAN)
 
 * New generics `nSeasons()` and `nSeasons<-()` (moved here from package sarima).
