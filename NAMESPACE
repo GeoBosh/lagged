@@ -47,6 +47,11 @@ export(
 
     , nSeasons
     , "nSeasons<-"
+
+  , sl2acfbase
+  , acfbase2sl
+  , sl2vecacf
+
+
+
 )
-
-

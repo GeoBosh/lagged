@@ -2,6 +2,13 @@
 
 * Bug-fix:  `nSeasons()` and `nSeasons<-()`are now exported.
 
+* new functions `sl2acfbase()`, `acfbase2sl()` and `sl2vecacf()` for converting
+  between (multivariate) autocovariances returned by `stats::acf()` and
+  season-lag representation. (These functions were formerly in package pcts.)
+
+to package 'lagged'.
+  (file `acfutils.R`)
+
 
 # lagged 0.2-0 (CRAN)
 

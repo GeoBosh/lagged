@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Class Lagged — Lagged-class • lagged</title>
+<title>Number of seasons — nSeasons • lagged</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Class Lagged — Lagged-class" />
+<meta property="og:title" content="Number of seasons — nSeasons" />
 
-<meta property="og:description" content="Class Lagged." />
+<meta property="og:description" content="Number of seasons." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,98 +100,63 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Class Lagged</h1>
+    <h1>Number of seasons</h1>
     
-    <div class="hidden name"><code>Lagged-class.Rd</code></div>
+    <div class="hidden name"><code>nSeasons.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Class Lagged.</p>
+    <p>Number of seasons.</p>
     
     </div>
 
-        
-    <h2 class="hasAnchor" id="objects-from-the-class"><a class="anchor" href="#objects-from-the-class"></a>Objects from the Class</h2>
+    <pre class="usage"><span class='fu'>nSeasons</span>(<span class='no'>object</span>)
+<span class='fu'>nSeasons</span>(<span class='no'>object</span>, <span class='no'>...</span>) <span class='kw'>&lt;-</span> <span class='no'>value</span></pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>an object for which the notion of number of seasons makes sense.</p></td>
+    </tr>
+    <tr>
+      <th>value</th>
+      <td><p>a positive integer number.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>further arguments for methods.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     
-    <p>This class serves as a base class for objects with natural
-indexing starting from zero. It is a virtual class, no objects can be
-created from it.</p>
-<p>Arithmetic and other operations are defined. They return objects
-strictly from the core "Lagged" classes, even if the arguments are from
-classes inheriting from the core "Lagged" classes. Of course, for such classes
-specialised methods can be defined to keep the class when appropriate.
-For example, the sum of two autocovariance functions is an
-autocovariance function, but their difference may not be a valid one.</p>
-<p>In arithmetic operations between "Lagged" objects the arguments are made
-of equal length by filling in NA's.  When one of the operands is not
-"Lagged", the recycling rule is applied only if that argument is a
-singleton.</p>
+    <p>These are generic functions.</p>
     
-    <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p></p><dl class='dl-horizontal'>
-    <dt><code>data</code>:</dt><dd><p>Object of class <code>"ANY"</code> Subclasses of
-      "Lagged" may restrict the class of this slot.</p></dd>
-  </dl>
+    <p>an integer number</p>
     
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
-    <p></p><dl class='dl-horizontal'>
-    <dt>[</dt><dd><p><code>signature(x = "Lagged", i = "missing")</code>:
-      In this case (i.e., <code>i</code> is missing) <code>[]</code>, returns the
-      underlying data. This is equivalent to using
-      <code>x[1:maxLag(x)]</code>.</p></dd>
-    %\item{[}{\code{signature(x = "Lagged", i = "numeric")}:
-    %
-    %  Subscripting (with one index) is defined naturally. It returns the
-    %  suitably subscripted \code{data} slot. Note that the returned
-    %  value is not from class "Lagged" but from that of the data slot
-    %  (in package \pkg{sarima} this is \code{"numeric"} or
-    %  \code{"array"}.  For indices larger than the maximal lag the
-    %  values are NA.
-    %
-    %  Currently negative indices work similarly to the standard R
-    %  indexing in that negative indices are used to drop
-    %  elements. However, for \eqn{k&gt;0}, using \eqn{-k} as an index drops
-    %  the element for lag \eqn{k-2}, not \eqn{k} (since the subsetting
-    %  is done by something like \code{x@data[i+1]}). This may be changed
-    %  and should not bee relied upon.
-    %
-    %}
-    <dt>[&lt;-</dt><dd><p><code>signature(x = "Lagged", i = "numeric")</code>:
-    Replace the values for the specified indices with the new
-      values.</p></dd>
-    <dt>maxLag</dt><dd><p><code>signature(object = "Lagged")</code>:
-    Gives the maximal lag in the object.</p></dd>
-    <dt>[[</dt><dd><p><code>signature(x = "Lagged", i = "numeric")</code>: ...</p></dd>
-    <dt>[[&lt;-</dt><dd><p><code>signature(x = "Lagged", i = "numeric")</code>: ...</p></dd>
-    %\item{[&lt;-}{\code{signature(x = "Lagged", i = "missing")}: ... }
-  </dl>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>function <code><a href='Lagged.html'>Lagged</a></code> which creates objects from suitable
-    subclasses of <code>"Lagged"</code>,
-    and also
-    <code><a href='Lagged1d-class.html'>Lagged1d</a></code>,
-    <code><a href='Lagged2d-class.html'>Lagged2d</a></code>,
-    <code><a href='Lagged3d-class.html'>Lagged3d</a></code></p></div>
+    <dl class='dl-horizontal'>
+    <dt><code>signature(object = "SarimaFilter")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(object = "VirtualArmaFilter")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd></dl>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#objects-from-the-class">Objects from the Class</a></li>
+      <li><a href="#details">Details</a></li>
 
-      <li><a href="#slots">Slots</a></li>
+      <li><a href="#value">Value</a></li>
 
       <li><a href="#methods">Methods</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
     <h2>Author</h2>
