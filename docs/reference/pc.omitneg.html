@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Methods for subset assignment — [&lt;--methods • lagged</title>
+<title>An internal function — pc.omitneg • lagged</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Methods for subset assignment — [&lt;--methods" />
+<meta property="og:title" content="An internal function — pc.omitneg" />
 
-<meta property="og:description" content="Methods for subset assignment." />
+<meta property="og:description" content="An internal function" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -101,36 +101,73 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Methods for subset assignment</h1>
+    <h1>An internal function</h1>
     
-    <div class="hidden name"><code>bracketass-methods.Rd</code></div>
+    <div class="hidden name"><code>pc.omitneg.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Methods for subset assignment.</p>
+    <p>An internal function</p>
     
     </div>
 
-        
-    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
+    <pre class="usage"><span class='fu'>pc.omitneg</span>(<span class='no'>lags</span>, <span class='no'>maxlag</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>lags</th>
+      <td><p>todo: describe!</p></td>
+    </tr>
+    <tr>
+      <th>maxlag</th>
+      <td><p>todo: describe!</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <dl class='dl-horizontal'>
-    <dt><code>signature(x = "FlexibleLagged", i = "missing")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd>
-    <dt><code>signature(x = "FlexibleLagged", i = "numeric")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd>
-    <dt><code>signature(x = "Lagged1d", i = "numeric")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd>
-    <dt><code>signature(x = "Lagged", i = "missing")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd>
-<dt><code>signature(x = "Lagged2d", i = "numeric")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "Lagged3d", i = "numeric")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "slMatrix", i = "ANY")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd></dl>
+    
+    <p><code>pc.omitneg</code> helps to implement dropping of negative indices in
+ season-lag objects. It returns its first argument, <code>lags</code>, if all
+ of its elements are non-negative. Otherwise, all elements of
+ <code>lags</code> must be non-positive. In this case the function creates the
+ vector <code>0:maxlag</code> and drops the elements specified by lags.  Note
+ that the default indexing will not work properly since zero elements in
+ an index are omitted (and there are such indices in season-lag
+ objects).</p>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>for <code>pc.omitneg</code>, a vector of lags (non-negative integers).</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># ttmatToslPairs</span>
+<span class='co'># pc.omitneg</span>
+<span class='kw pkg'>lagged</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/lagged/topics/pc.omitneg'>pc.omitneg</a></span>(<span class='fl'>0</span>:<span class='fl'>5</span>,<span class='fl'>10</span>) <span class='co'># 0:5, unchagend since all values &gt;= 0</span></div><div class='output co'>#&gt; [1] 0 1 2 3 4 5</div><div class='input'>
+<span class='kw pkg'>lagged</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/lagged/topics/pc.omitneg'>pc.omitneg</a></span>(-(<span class='fl'>0</span>:<span class='fl'>5</span>),<span class='fl'>10</span>) <span class='co'># 6:10, works like</span></div><div class='output co'>#&gt; [1]  6  7  8  9 10</div><div class='input'>(<span class='fl'>0</span>:<span class='fl'>10</span>)[-(<span class='fl'>0</span>:<span class='fl'>5</span> +<span class='fl'>1</span>)]     <span class='co'># same</span></div><div class='output co'>#&gt; [1]  6  7  8  9 10</div><div class='input'>
+# don't mix positive and negative numbers in pc.omitneg
+</div><span class='co'># NOT RUN {</span>
+<span class='kw pkg'>lagged</span><span class='kw ns'>:::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/lagged/topics/pc.omitneg'>pc.omitneg</a></span>(<span class='fu'>c</span>(<span class='fl'>0</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,-<span class='fl'>4</span>,<span class='fl'>5</span>), <span class='fl'>10</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#methods">Methods</a></li>
-          </ul>
+      <li><a href="#details">Details</a></li>
 
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
+    <h2>Author</h2>
+    Georgi N. Boshnakov
   </div>
 </div>
 
