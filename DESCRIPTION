@@ -2,13 +2,13 @@ Package: lagged
 Type: Package
 Title: Classes and Methods for Lagged Objects
 Version: 0.2-1
-Date: 2018-08-21
+Date: 2018-10-05
 Authors@R: person(given = c("Georgi", "N."), family = "Boshnakov",
                   role = c("aut", "cre"), 
                   email = "georgi.boshnakov@manchester.ac.uk")
 Maintainer: Georgi N. Boshnakov <georgi.boshnakov@manchester.ac.uk>
 Description: Provides classes and methods for lagged objects.
-URL: https://github.com/GeoBosh/lagged
+URL: https://github.com/GeoBosh/lagged https://geobosh.github.io/lagged/
 BugReports: https://github.com/GeoBosh/lagged/issues
 Imports: methods
 Suggests: testthat

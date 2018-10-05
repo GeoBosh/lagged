@@ -6,8 +6,9 @@
   between (multivariate) autocovariances returned by `stats::acf()` and
   season-lag representation. (These functions were formerly in package pcts.)
 
-to package 'lagged'.
-  (file `acfutils.R`)
+* The title of the vignette and the keywords were wrong.
+
+* added the pkgdown site to DESCRIPTION.
 
 
 # lagged 0.2-0 (CRAN)
