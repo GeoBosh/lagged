@@ -35,13 +35,13 @@ indexing, ~maxLag~, and similar to ensure that the Lagged functionality is provi
 #+BEGIN_SRC R
 setClass("FlexibleLagged", contains = "Lagged", slots = c(data = "Lagged") )
 #+END_SRC
-The initilisation method for "FlexibleLagged" objects does the obvious thing if argument
+The initialisation method for "FlexibleLagged" objects does the obvious thing if argument
 ~data~ is "Lagged". Otherwise it converts argument ~data~ to a suitable "Lagged" object
 before assigning it to the data slot. If the function is not able to infer a suitable
 "Lagged" class it still passes ~data~ on to the next method which usually leads to an error.
 
 The following convenience function is used to infer a suitable "Lagged" class for argument
-~data~.:
+~data~:
 #+BEGIN_SRC R
 .whichNativeLagged <- function(x){
     if(is(x, "Lagged"))
@@ -59,9 +59,9 @@ The following convenience function is used to infer a suitable "Lagged" class fo
 #+END_SRC
 
 
-This is the initialisation method. Note that it gets rid of recursive "FlexibleLagged" data
-slots, i.e. the data slot of the returned object is "Lagged" but not "FlexibleLagged".
-This probably should be taken care of by a validation method.
+This is the initialisation method for ="FlexibleLagged"=. Note that it gets rid of recursive
+="FlexibleLagged"= data slots, i.e. the data slot of the returned object is "Lagged" but not
+"FlexibleLagged".  This probably should be taken care of by a validation method.
 #+BEGIN_SRC R
 setMethod("initialize", "FlexibleLagged",
           function(.Object, data, ...){
@@ -234,7 +234,7 @@ The binary "Ops" methods return values from one of the core lagged classes, even
 objects are from classes inheriting from "Lagged". The reason is that, for example, the
 difference between autocovariance functions is not necessarilly autocovariance, but it is
 still a lagged object. It would be very confusing if the result was not guaranteed to be
-"Lagged".  Also, if a policy of preserving the actual class were to be adopted, what wwould
+"Lagged".  Also, if a policy of preserving the actual class were to be adopted, what would
 be the rule for the class of the result from binary operations between lagged objects from
 different classes (it seems not possible to have a simple one). 
 
@@ -254,9 +254,9 @@ of "Lagged" the returned "Lagged" value is natural and expected. But what about 
 not aware that there are "Lagged" objects among the arguments? What to do when the "ordinary"
 argument is of length one - should this be an exception? But then the user may not know that
 the length is one, leading to surprises. Also, there is a conceptual difference here between
-the additive and multiplicative operations. /All this should be documented in a vignette. It
+the additive and multiplicative operations. (All this should be documented in a vignette. It
 seems sufficient that the recycling rule is banned. Need to finalise operation with
-singletons./
+singletons.)
 
 
 Operations between two lagged objects give a lagged object. If their ~maxLag()~ properties
@@ -298,7 +298,7 @@ setMethod("Ops", c(e1 = "Lagged", e2 = "Lagged"),
 satisfactory, see ~whichLagged()~ which encapsulates it. Also, forbid mixing 1d with 2d,
 etc.?
 
-When only one of the object is "Lagged", the operations are defined if the following cases:
+When only one of the objects is "Lagged", the operations are defined if the following cases:
 
     1. the length of the other object is equal to the length of the data part of the "Lagged"
        object,
