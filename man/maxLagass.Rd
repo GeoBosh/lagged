@@ -12,7 +12,7 @@ maxLag(object, ...) <- value
   \item{object}{an object for which this makes sense.}
   \item{\dots}{currently not used.}
   \item{value}{
-    the new value of the maximal lag, a nohn-negative integer number.
+    the new value of the maximal lag, a non-negative integer number.
   } 
 }
 \details{
@@ -64,6 +64,10 @@ maxLag(la3) # 5
 
 ## extend la3, new entries are filled with NA's
 maxLag(la3) <- 10
+la3
+
+## alternatively, use "[<-" which accepts any replacement values
+la3[11:13] <- 0
 la3
 }
 \keyword{methods}

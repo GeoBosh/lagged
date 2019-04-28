@@ -1,3 +1,5 @@
+[![CRANStatusBadge](http://www.r-pkg.org/badges/version/lagged)](https://cran.r-project.org/package=lagged)
+
 R package 'lagged' provides classes and methods for objects, like autocovariances, whose
 natural indexing starts from zero.
 
