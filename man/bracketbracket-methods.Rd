@@ -2,6 +2,7 @@
 \docType{methods}
 \alias{[[-methods}
 \alias{[[,Lagged,numeric-method}
+\alias{[[,slMatrix,numeric-method}
 \title{Methods for '[[' in package 'lagged'}
 \description{Methods for '[[' in package 'lagged'.}
 \section{Methods}{
@@ -17,7 +18,10 @@
 \item{\code{signature(x = "Lagged", i = "numeric")}}{
 %%  ~~describe this method here~~
 }
-}}
+\item{\code{signature(x = "slMatrix", i = "numeric")}}{{
+%%  ~~describe this method here~~
+}
+}}}
 \examples{
 ## for 1d objects the difference of '[' and '[[' is not visible
 (acv1 <- acf2Lagged(acf(ldeaths, plot = FALSE)))

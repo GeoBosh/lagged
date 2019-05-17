@@ -2,6 +2,7 @@
 \alias{maxLag<--methods}
 \alias{maxLag<-}
 \alias{maxLag<-,Lagged-method}
+\alias{maxLag<-,FlexibleLagged-method}
 \docType{methods}
 \title{Change the maximal lag in a lagged object}
 \description{Change the maximal lag in a lagged object.}
@@ -38,7 +39,10 @@ maxLag(object, ...) <- value
 \item{\code{signature(object = "Lagged")}}{
 %%  ~~describe this method here~~
 }
-}}
+\item{\code{signature(object = "FlexibleLagged")}}{{
+%%  ~~describe this method here~~
+}
+}}}
 %\references{
 %%% ~put references to the literature/web site here ~
 %}

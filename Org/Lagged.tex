@@ -1,4 +1,4 @@
-% Created 2019-03-31 Sun 21:42
+% Created 2019-05-16 Thu 16:06
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt,a4paper]{article}
 	      \usepackage[left=1.8cm,right=1.8cm,top=2cm,bottom=2cm]{geometry}
@@ -41,7 +41,7 @@ file:
 
 
 \section{Class "Lagged"}
-\label{sec:orgfa7184e}
+\label{sec:orgc371a54}
 
 
 "Lagged" is the base lagged class. It is virtual and defines a slot \texttt{data} from class
@@ -52,12 +52,23 @@ setClass("Lagged", slots = c(data = "ANY"), contains = "VIRTUAL")
                                # setClass("Lagged", slots = c(data = "structure") )
 \end{verbatim}
 
-Actual classes inherit from "Lagged" and restrict the data slot.  One special subclass
-of "Lagged" is "FlexibleLagged", which can represent objects from any subclass of
-"Lagged". This is achieved by setting  the data slot to be "Lagged" along with methods for
-indexing, \texttt{maxLag}, and similar to ensure that the Lagged functionality is provided.
+Actual classes inherit from "Lagged" and restrict the data slot.  
 \begin{verbatim}
-setClass("FlexibleLagged", contains = "Lagged", slots = c(data = "Lagged") )
+                                               # setClass("X", slots = c(data = "structure"))
+setClass("Lagged1d", contains = "Lagged", slots = c(data = "vector") )
+setClass("Lagged2d", contains = "Lagged", slots = c(data = "matrix") )
+setClass("Lagged3d", contains = "Lagged", slots = c(data = "array") )
+                     # TODO: check validity for Lagged3d: 3 dimensional.
+\end{verbatim}
+One special subclass of "Lagged" is "FlexibleLagged", which can represent objects from any
+subclass of "Lagged". This is achieved by setting the data slot to be "Lagged" along with
+methods for indexing, \texttt{maxLag}, and similar to ensure that the Lagged functionality is
+provided. (*NOTE (2019-05-15): adding prototype since the default is puzzling and leaves the
+object invalid if slot \texttt{data} is not set during initialisation. In particular,
+\texttt{new("FlexibleLagged")}, was returning an invalid object without warning nor error.)
+\begin{verbatim}
+setClass("FlexibleLagged", contains = "Lagged", slots = c(data = "Lagged"),
+         prototype = list(data = new("Lagged1d")) )
 \end{verbatim}
 The initialisation method for "FlexibleLagged" objects does the obvious thing if argument
 \texttt{data} is "Lagged". Otherwise it converts argument \texttt{data} to a suitable "Lagged" object
@@ -85,12 +96,20 @@ The following convenience function is used to infer a suitable "Lagged" class fo
 
 This is the initialisation method for \texttt{"FlexibleLagged"}. Note that it gets rid of recursive
 \texttt{"FlexibleLagged"} data slots, i.e. the data slot of the returned object is "Lagged" but not
-"FlexibleLagged".  This probably should be taken care of by a validation method.
+"FlexibleLagged".  \textbf{TODO:} This probably should be taken care of by a validation method.
+
+\textbf{!!! 2019-05-15 Note:} Moving argument data after the \texttt{"..."} argument, so that it is matched
+     only when explicitly supplied. Otherwise it makes it difficult to use unnamed arguments
+     in initialisation of subclasses. The success may depend on the order of the arguments
+     and the error message is not helpful. This change is potentially breaking change but it
+     seems that \texttt{data} is always named in existing code.
 \begin{verbatim}
 setMethod("initialize", "FlexibleLagged",
-          function(.Object, data, ...){
-              if(missing(data))
-                  return(callNextMethod(.Object, ...))
+          function(.Object, ..., data){
+              if(missing(data)){
+                  res <- callNextMethod(.Object, ...)
+                  return(res)
+              }
 
               while(is(data, "FlexibleLagged"))
                   data <- data@data
@@ -120,14 +139,14 @@ defined for "Lagged".
 Lagged? For now putting some code in \texttt{Lagged()} to accept "acf" objects.
 
 \subsection{Core methods for lagged objects}
-\label{sec:org6d089da}
+\label{sec:orge6d2c91}
 
 The methods in this section are ok for objects inheriting from "Lagged". Where
 necessary, specialised methods are defined for "FlexibleLagged".
 
 
 \subsubsection{Subscripting with "["}
-\label{sec:org18c9cac}
+\label{sec:org4ec62a3}
 
 Subscripting with \texttt{i} missing, returns the raw data.
 \begin{verbatim}
@@ -144,14 +163,24 @@ subclasses. For indices larger than \texttt{maxLag(x)} the values are filled wit
 For "[", the default for \texttt{drop} is \texttt{FALSE}.
 \textbf{TODO:} check that the existing methods follow this convention!
 
-Indexing "FlexibleLagged" simply transfers the operation to the data slot (it is "Lagged"):
+Indexing "FlexibleLagged" simply transfers the operation to the data slot (it is "Lagged").
+I created separate methods for \texttt{drop} since just omitting it from the method signature and setting
+\texttt{drop = FALSE} in the signature of the function seems to have no effect (and
+\texttt{findMethods("FlexibleLagged")} shows that the default for drop in the method is \texttt{TRUE}).
 \begin{verbatim}
-setMethod("[", c(x = "FlexibleLagged"), function(x, i, ...) x@data[i, ...] )
+setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "missing"), 
+          function(x, i, ...)
+              x@data[i, ..., drop = FALSE] 
+          )
+setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "logical"), 
+          function(x, i, ..., drop)
+              x@data[i, ..., drop = drop] 
+          )
 \end{verbatim}
 
 
 \subsubsection{Subscript-replacement with "[<-"}
-\label{sec:orgc5dad1d}
+\label{sec:org06e120a}
 
 Similarly to "[", subscript-replacement "[<-" replaces the contents of the data.  The method
 for "Lagged" does not check the validity of argument \texttt{value} but the assignment will
@@ -215,7 +244,7 @@ setReplaceMethod("[", c(x = "FlexibleLagged", i = "numeric"),
 
 
 \subsubsection{Methods for "[[" and "[[<-"}
-\label{sec:orgb507196}
+\label{sec:org24a9d23}
 
 Indexing with "[[" returns the value for the specified lag. This is the recommended way to
 extract the value at a single index.
@@ -235,6 +264,7 @@ setMethod("[[", c(x = "Lagged", i = "numeric"),
 \end{verbatim}
 Note the use of \texttt{drop = TRUE}.
 
+
 \textbf{TODO:} The use of \texttt{drop = TRUE} maybe needs some further thought. Maybe something that drops
 only the index corresponding to the lag is preferable and such behaviour should be documented!
 
@@ -253,7 +283,7 @@ setReplaceMethod("[[", c(x = "Lagged", i = "numeric"),
 
 
 \subsubsection{Arithmetic and other operations (Ops group)}
-\label{sec:org8bd6503}
+\label{sec:org0a34409}
 
 Operations in the \texttt{Ops} group involving lagged objects are defined "naturally" on their
 data. However, they are more restrictive than base R's conventions for atomic objects and do
@@ -295,7 +325,7 @@ operation.
 
 \begin{enumerate}
 \item "Ops" involving "Lagged"
-\label{sec:orgee8dc55}
+\label{sec:org49c6a69}
 
 The unary operators preserve the class of the object:
 \begin{verbatim}
@@ -386,7 +416,7 @@ setMethod("Ops", c(e1 = "vector", e2 = "Lagged"),
 
 
 \item "Ops" involving "FlexibleLagged"
-\label{sec:orgf0aa19e}
+\label{sec:org2bdf302}
 
 Operations involving "FlexibleLagged" objects use those defined for "Lagged" by operating on
 the data slot (which is "Lagged").
@@ -424,7 +454,7 @@ subclasses, like "Lagged2d".
 
 
 \subsubsection{"Math" and "Math2" group methods}
-\label{sec:org801bdd9}
+\label{sec:org5b96f3e}
 
 "Math" and "Math2" methods return the object with its data part transformed by the
 corresponding function. 
@@ -449,7 +479,7 @@ setMethod("Math2", c(x = "Lagged"),
 
 
 \subsubsection{"Summary" group methods}
-\label{sec:org5162825}
+\label{sec:org6d0781c}
 
 The "Summary" methods operate on the data part of the "Lagged" object.
 \begin{verbatim}
@@ -461,7 +491,7 @@ setMethod("Summary", c(x = "Lagged"),
 
 
 \subsection{S3 methods for as.vector() and related functions for "Lagged"}
-\label{sec:orgc390c9a}
+\label{sec:org0d28112}
 
 \begin{verbatim}
 ## TODO: check if the S3 methods understand S4 inheritance (I think they do)
@@ -482,7 +512,7 @@ as.array.Lagged3d  <- function(x, ...) x@data
 
 
 \subsection{setAs() methods for "Lagged"}
-\label{sec:org997b2c6}
+\label{sec:org5b4aa19}
 
 These methods call the corresponding S3 methods defined above:
 \begin{verbatim}
@@ -494,7 +524,7 @@ setAs("Lagged", "array",  function(from) as.array(from) )
 
 
 \subsection{Generic function maxLag()}
-\label{sec:orgc699efe}
+\label{sec:orgc12a672}
 
 The default method for \texttt{maxLag()} handles objects inheriting from S3 class "acf". In all
 other cases it raises an error. Notice that in "acf" the lag is in the first dimension.
@@ -514,10 +544,18 @@ setGeneric("maxLag<-", def = function(object, ..., value){ standardGeneric("maxL
 \end{verbatim}
 
 \textbf{TODO:} Do we need a separate method for "FlexibleLagged"?
+*Answer (2015-05-16): Yes!
 \begin{verbatim}
 setReplaceMethod("maxLag", "Lagged",
                  function(object, ..., value){
                      object@data <- object[0:value]
+                     object
+                 }
+                 )
+
+setReplaceMethod("maxLag", "FlexibleLagged",
+                 function(object, ..., value){
+                     maxLag(object@data) <- value
                      object
                  }
                  )
@@ -545,7 +583,7 @@ setMethod("maxLag", c(object = "Lagged"), function(object) maxLag(object@data) )
 
 
 \subsection{Length of "Lagged" objects - S3 method for length()}
-\label{sec:org1788c69}
+\label{sec:org68a3c70}
 
 The length of "Lagged" objects is defined to be \texttt{maxLag(x)+1}, not the length of the data in
 the "Lagged" object. In most cases of direct use \texttt{maxLag(x)} is more appropriate.
@@ -559,37 +597,37 @@ length.Lagged <- function(x) maxLag(x) + 1
 
 
 
-\section{Default classes and methods for lagged objects}
-\label{sec:orgd1a169d}
 
-
-\begin{verbatim}
-                                               # setClass("X", slots = c(data = "structure"))
-setClass("Lagged1d", contains = "Lagged", slots = c(data = "vector") )
-setClass("Lagged2d", contains = "Lagged", slots = c(data = "matrix") )
-setClass("Lagged3d", contains = "Lagged", slots = c(data = "array") )
-                     # TODO: check validity for Lagged3d: 3 dimensional.
-\end{verbatim}
-
-
-\subsection{Methods for "["}
-\label{sec:org49ffca1}
+\section{Methods for "["}
+\label{sec:org472d3cf}
 
 \begin{verbatim}
 setMethod("[", c(x = "Lagged1d", i = "numeric"),
           function(x, i, drop) x@data[i+1] )
+\end{verbatim}
 
-## TODO: argument "drop"?
+
+\textbf{TODO:} Don't give option to change argument \texttt{drop} and raise error if it is present?
+
+\textbf{TODO:} Currently silently ignores argument \texttt{j}. Throw error if it is present?
+    Another alternative is to define the current methods with \texttt{j = "missing"} but then
+    explicit methods for "ANY" will be needed to avoid some other method matching quietly and
+    doing something even less relevant.
+
+\textbf{TODO:} For \texttt{"Lagged2d"}, add argument \texttt{type} to accommodate indexing like \texttt{"slMatrix"}.
+    Need some thought to streamline that old stuff. However, it may be better not to put this on
+    \texttt{"Lagged2d"} but introduce subclass, say \texttt{"LaggedSL" of ="Lagged2d"} and define modified
+    methods for that, streamlining in the process.
+\begin{verbatim}
 setMethod("[", c(x = "Lagged2d", i = "numeric"),
-          function(x, i, drop = FALSE) x@data[ , i+1, drop = drop] )
+          function(x, i, ..., drop = FALSE) x@data[ , i+1, drop = drop] )
 
-## TODO: change autocovariances(), etc to this convention!!
 setMethod("[", c(x = "Lagged3d", i = "numeric"),
-          function(x, i, drop = FALSE) x@data[, , i+1, drop = drop] )
+          function(x, i, ..., drop = FALSE) x@data[, , i+1, drop = drop] )
 \end{verbatim}
 
 \subsection{whichLagged()}
-\label{sec:org99d682b}
+\label{sec:org5e1ae2d}
 
 For now \texttt{whichLagged()} is not exported. It could be exported to allow core "Lagged" classes
 defined in other packages to add functionality. But if it is to be exported, it would need
@@ -621,7 +659,7 @@ setMethod("whichLagged", c(x = "Lagged3d", y = "missing"), function(x) "Lagged3d
 
 
 \subsection{Methods for "[<-"}
-\label{sec:org1675942}
+\label{sec:org27b9a04}
 
 Missing index is equivalent to replacing all data: 
 \begin{verbatim}
@@ -660,7 +698,7 @@ setReplaceMethod("[", c(x = "Lagged3d", i = "numeric"),
 
 
 \section{show() methods}
-\label{sec:org3e1dbfc}
+\label{sec:org1ca5f3c}
 
 \begin{verbatim}
 ## .printVecOrArray <- function(x){
@@ -698,7 +736,16 @@ setMethod("show", "Lagged1d",
 \end{verbatim}
 
 \begin{verbatim}
-## TODO: "show", "Lagged2d"
+setMethod("show", "Lagged2d",
+          function(object){
+              .reportClassName(object, "Lagged2d")
+              cat("Slot *data*:", "\n")
+
+              x <- dataWithLagNames(object)
+              print(x)
+              ## cat("\n")
+          }
+          )
 \end{verbatim}
 
 
@@ -748,7 +795,7 @@ setMethod("show", "FlexibleLagged",
 
 
 \section{Further constructors for lagged objects}
-\label{sec:org94c0c15}
+\label{sec:org0ce69ec}
 
 Function \texttt{new()} can be used to create objects from the lagged classes.
 In this section we define some functions to make this more convenient.
@@ -799,14 +846,15 @@ Lagged <- function(data, ...){
     }else if(inherits(data, "acf")){    # for S3 class "acf"
         acf2Lagged(data)
     }else
-        stop("Cannot create a Lagged object from the given data")
+        stop("I don't know how to create a Lagged object from the given data")
 }
 \end{verbatim}
 
 \textbf{TODO:} Tests!
 
+
 \section{New}
-\label{sec:org732c847}
+\label{sec:org8e6c5d3}
 
 The functions in this section are temporarily here during development and should be move to
 more appropriate places eventually.
@@ -821,6 +869,9 @@ packages. Occasionally users may wish to use it too.
 \begin{verbatim}
 dataWithLagNames <- function(object, prefix = "Lag_"){
     x <- object[]
+    if(length(x) == 0)
+        return(x)
+
     if(is.array(x)){
         d <- dim(x)
         nd <- length(d)

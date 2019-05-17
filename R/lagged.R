@@ -5,7 +5,14 @@ setClass("Lagged", slots = c(data = "ANY"), contains = "VIRTUAL")
                                # setClass("Lagged", slots = c(data = "vector") )
                                # setClass("Lagged", slots = c(data = "structure") )
 
-setClass("FlexibleLagged", contains = "Lagged", slots = c(data = "Lagged") )
+                                               # setClass("X", slots = c(data = "structure"))
+setClass("Lagged1d", contains = "Lagged", slots = c(data = "vector") )
+setClass("Lagged2d", contains = "Lagged", slots = c(data = "matrix") )
+setClass("Lagged3d", contains = "Lagged", slots = c(data = "array") )
+                     # TODO: check validity for Lagged3d: 3 dimensional.
+
+setClass("FlexibleLagged", contains = "Lagged", slots = c(data = "Lagged"),
+         prototype = list(data = new("Lagged1d")) )
 
 .whichNativeLagged <- function(x){
     if(is(x, "Lagged"))
@@ -22,9 +29,11 @@ setClass("FlexibleLagged", contains = "Lagged", slots = c(data = "Lagged") )
 }
 
 setMethod("initialize", "FlexibleLagged",
-          function(.Object, data, ...){
-              if(missing(data))
-                  return(callNextMethod(.Object, ...))
+          function(.Object, ..., data){
+              if(missing(data)){
+                  res <- callNextMethod(.Object, ...)
+                  return(res)
+              }
 
               while(is(data, "FlexibleLagged"))
                   data <- data@data
@@ -45,7 +54,14 @@ setMethod("initialize", "FlexibleLagged",
 setMethod("[", c(x = "Lagged", i = "missing"), function(x) x@data )
 setMethod("[", c(x = "FlexibleLagged", i = "missing"), function(x) x@data[] )
 
-setMethod("[", c(x = "FlexibleLagged"), function(x, i, ...) x@data[i, ...] )
+setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "missing"), 
+          function(x, i, ...)
+              x@data[i, ..., drop = FALSE] 
+          )
+setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "logical"), 
+          function(x, i, ..., drop)
+              x@data[i, ..., drop = drop] 
+          )
 
 setReplaceMethod("[", c(x = "Lagged", i = "missing"),
           function(x, i, value){
@@ -233,6 +249,13 @@ setReplaceMethod("maxLag", "Lagged",
                  }
                  )
 
+setReplaceMethod("maxLag", "FlexibleLagged",
+                 function(object, ..., value){
+                     maxLag(object@data) <- value
+                     object
+                 }
+                 )
+
 setMethod("maxLag", c(object = "vector"), function(object) length(object) - 1)
 setMethod("maxLag", c(object = "matrix"), function(object) ncol(object) - 1 )
 setMethod("maxLag", c(object = "array"),
@@ -245,22 +268,19 @@ setMethod("maxLag", c(object = "Lagged"), function(object) maxLag(object@data) )
 
 length.Lagged <- function(x) maxLag(x) + 1
 
-                                               # setClass("X", slots = c(data = "structure"))
-setClass("Lagged1d", contains = "Lagged", slots = c(data = "vector") )
-setClass("Lagged2d", contains = "Lagged", slots = c(data = "matrix") )
-setClass("Lagged3d", contains = "Lagged", slots = c(data = "array") )
-                     # TODO: check validity for Lagged3d: 3 dimensional.
-
 setMethod("[", c(x = "Lagged1d", i = "numeric"),
           function(x, i, drop) x@data[i+1] )
 
-## TODO: argument "drop"?
-setMethod("[", c(x = "Lagged2d", i = "numeric"),
-          function(x, i, drop = FALSE) x@data[ , i+1, drop = drop] )
+setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "missing"),
+          function(x, i, ..., drop = FALSE) x@data[ , i+1, drop = FALSE] )
 
-## TODO: change autocovariances(), etc to this convention!!
-setMethod("[", c(x = "Lagged3d", i = "numeric"),
-          function(x, i, drop = FALSE) x@data[, , i+1, drop = drop] )
+setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "logical"),
+          function(x, i, ..., drop = FALSE) x@data[ , i+1, drop = drop] )
+
+setMethod("[", c(x = "Lagged3d", i = "numeric", j = "missing", drop = "missing"),
+          function(x, i, ..., drop = FALSE) x@data[, , i+1, drop = FALSE] )
+setMethod("[", c(x = "Lagged3d", i = "numeric", j = "missing", drop = "logical"),
+          function(x, i, ..., drop = FALSE) x@data[, , i+1, drop = drop] )
 
 .matLagged <- matrix("FlexibleLagged", 4, 4)
 diag(.matLagged) <- c("FlexibleLagged", "Lagged1d", "Lagged2d", "Lagged3d")
@@ -336,7 +356,16 @@ setMethod("show", "Lagged1d",
           }
           )
 
-## TODO: "show", "Lagged2d"
+setMethod("show", "Lagged2d",
+          function(object){
+              .reportClassName(object, "Lagged2d")
+              cat("Slot *data*:", "\n")
+
+              x <- dataWithLagNames(object)
+              print(x)
+              ## cat("\n")
+          }
+          )
 
 setMethod("show", "Lagged3d",
           function(object){
@@ -417,11 +446,14 @@ Lagged <- function(data, ...){
     }else if(inherits(data, "acf")){    # for S3 class "acf"
         acf2Lagged(data)
     }else
-        stop("Cannot create a Lagged object from the given data")
+        stop("I don't know how to create a Lagged object from the given data")
 }
 
 dataWithLagNames <- function(object, prefix = "Lag_"){
     x <- object[]
+    if(length(x) == 0)
+        return(x)
+
     if(is.array(x)){
         d <- dim(x)
         nd <- length(d)

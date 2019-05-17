@@ -1,15 +1,17 @@
 \name{[-methods}
 \docType{methods}
 \alias{[-methods}
-\alias{[,FlexibleLagged,ANY-method}
-\alias{[,FlexibleLagged,missing-method}
-\alias{[,Lagged1d,numeric-method}
-\alias{[,Lagged2d,numeric-method}
-\alias{[,Lagged3d,numeric-method}
-\alias{[,Lagged,missing-method}
-\alias{[,ANY,ANY-method}
-\alias{[,nonStructure,ANY-method}
-\alias{[,slMatrix,ANY-method}
+\alias{[,FlexibleLagged,missing,ANY,ANY-method}
+\alias{[,FlexibleLagged,numeric,missing,logical-method}
+\alias{[,FlexibleLagged,numeric,missing,missing-method}
+\alias{[,Lagged,missing,ANY,ANY-method}
+\alias{[,Lagged1d,numeric,ANY,ANY-method}
+\alias{[,Lagged2d,numeric,missing,logical-method}
+\alias{[,Lagged2d,numeric,missing,missing-method}
+\alias{[,Lagged3d,numeric,missing,logical-method}
+\alias{[,Lagged3d,numeric,missing,missing-method}
+\alias{[,slMatrix,ANY,ANY,ANY-method}
+
 \title{Methods for subsetting defined in package 'lagged'}
 \description{Methods for subsetting  defined in package 'lagged'.}
 \section{Methods}{
@@ -36,31 +38,42 @@
   "lagged": 
   \describe{
 
-    \item{\code{signature(x = "FlexibleLagged", i = "missing")}}{
-      %%  ~~describe this method here~~
-    }
-
-    \item{\code{signature(x = "FlexibleLagged", i = "ANY")}}{
-      %%  ~~describe this method here~~
-    }
-
-    \item{\code{signature(x = "Lagged1d", i = "numeric")}}{
-      %%  ~~describe this method here~~
-    }
-    
-    \item{\code{signature(x = "Lagged2d", i = "numeric")}}{
-      %%  ~~describe this method here~~
-    }
-    
-    \item{\code{signature(x = "Lagged3d", i = "numeric")}}{
-      %%  ~~describe this method here~~
-    }
-
-    \item{\code{signature(x = "Lagged", i = "missing")}}{
-      %%  ~~describe this method here~~
-    }
-    \item{\code{signature(x = "slMatrix", i = "ANY")}}{{
-	Describe any discrepancy with the Lagged methods.
-      }
-}}}
+  \item{\code{signature(x = "FlexibleLagged", i = "missing", j = "ANY", drop = "ANY")}}{{
+%%  ~~describe this method here~~
+}
+}\item{\code{signature(x = "FlexibleLagged", i = "numeric", j = "missing", 
+          drop = "logical")}}{{
+%%  ~~describe this method here~~
+}
+}\item{\code{signature(x = "FlexibleLagged", i = "numeric", j = "missing", 
+          drop = "missing")}}{{
+%%  ~~describe this method here~~
+}
+}\item{\code{signature(x = "Lagged", i = "missing", j = "ANY", drop = "ANY")}}{{
+%%  ~~describe this method here~~
+}
+}\item{\code{signature(x = "Lagged1d", i = "numeric", j = "ANY", drop = "ANY")}}{{
+%%  ~~describe this method here~~
+}
+}\item{\code{signature(x = "Lagged2d", i = "numeric", j = "missing", 
+          drop = "logical")}}{{
+%%  ~~describe this method here~~
+}
+}\item{\code{signature(x = "Lagged2d", i = "numeric", j = "missing", 
+          drop = "missing")}}{{
+%%  ~~describe this method here~~
+}
+}\item{\code{signature(x = "Lagged3d", i = "numeric", j = "missing", 
+          drop = "logical")}}{{
+%%  ~~describe this method here~~
+}
+}\item{\code{signature(x = "Lagged3d", i = "numeric", j = "missing", 
+          drop = "missing")}}{{
+%%  ~~describe this method here~~
+}
+}\item{\code{signature(x = "slMatrix", i = "ANY", j = "ANY", drop = "ANY")}}{{
+%%  ~~describe this method here~~
+}
+}}
+}
 \keyword{methods}
