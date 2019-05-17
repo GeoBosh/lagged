@@ -17,8 +17,8 @@
 
 - add `"maxLag<-"` method for `FlexibleLagged` objects.
 
-- the "[[" and "[" methods for `FlexibleLagged` were not to with the other
-  Lagged classes (and the documentation) for index of length one.
+- the "[[" and "[" methods for `FlexibleLagged` were not completely in line with
+  the other Lagged classes (and the documentation) for index of length one.
   
 
 # lagged 0.2-1
