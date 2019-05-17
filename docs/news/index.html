@@ -104,6 +104,20 @@
       <small>Source: <a href='https://github.com/GeoBosh/lagged/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="lagged-0-2-2" class="section level1">
+<h1 class="page-header">
+<a href="#lagged-0-2-2" class="anchor"></a>lagged 0.2-2<small> Unreleased </small>
+</h1>
+<ul>
+<li><p>added the missing <code>show()</code> method for <code>Lagged2d</code> objects.</p></li>
+<li><p>added <code>[[</code> method for <code>slMatrix</code> objects.</p></li>
+<li><p>new <code>as()</code> method to convert <code>matrix</code> to <code>slMatrix</code>.</p></li>
+<li><p>the initialisation method for <code>FlexibleLagged</code> now matches argument <code>data</code> only if it is named, i.e. when explicitly supplied. This puts it in line with the default initialisation methods and, in particular, makes it easier to initialise subclasses of <code>FlexibleLagged</code>.</p></li>
+<li><p>set a prototype, <code>new("Lagged1d")</code>, for the data slot of <code>FlexibleLagged</code>. The default prototype was giving invalid objects in some cases, e.g. <code>new("FlexibleLagged")</code>.</p></li>
+<li><p>add <code>"maxLag&lt;-"</code> method for <code>FlexibleLagged</code> objects.</p></li>
+<li><p>the “[[” and “[” methods for <code>FlexibleLagged</code> were not completely in line with the other Lagged classes (and the documentation) for index of length one.</p></li>
+</ul>
+</div>
     <div id="lagged-0-2-1" class="section level1">
 <h1 class="page-header">
 <a href="#lagged-0-2-1" class="anchor"></a>lagged 0.2-1<small> 2019-04-05 </small>
@@ -159,6 +173,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#lagged-0-2-2">0.2-2</a></li>
         <li><a href="#lagged-0-2-1">0.2-1</a></li>
         <li><a href="#lagged-0-2-0-cran">0.2-0</a></li>
         <li><a href="#lagged-0-1-2">0.1-2</a></li>

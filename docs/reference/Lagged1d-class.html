@@ -117,13 +117,16 @@
         
     <h2 class="hasAnchor" id="objects-from-the-class"><a class="anchor" href="#objects-from-the-class"></a>Objects from the Class</h2>
 
-    <p>Objects can be created by calls of the form <code>new("Lagged1d", ...)</code>.
-<!-- %%  ~~ describe objects here ~~ --></p>
+    
+    <p>Objects can be created by calls of the form <code><a href='Lagged.html'>Lagged(v)</a></code> or
+  <code>new("Lagged1d", data = v)</code>, where <code>v</code> is a vector.
+  <code>new("Lagged1d", ...)</code> also works.</p>  
+<p><!-- %%  ~~ describe objects here ~~ --></p>
     
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     <p></p><dl class='dl-horizontal'>
-    <dt><code>data</code>:</dt><dd><p>Object of class <code>"vector"</code> ~~</p></dd>
+    <dt><code>data</code>:</dt><dd><p>Object of class <code>"vector"</code>.</p></dd>
   </dl>
     
     <h2 class="hasAnchor" id="extends"><a class="anchor" href="#extends"></a>Extends</h2>
@@ -133,9 +136,10 @@
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     <p></p><dl class='dl-horizontal'>
-    <dt>[</dt><dd><p><code>signature(x = "Lagged1d", i = "numeric")</code>: ...</p></dd>
     <dt>[&lt;-</dt><dd><p><code>signature(x = "Lagged1d", i = "numeric")</code>: ...</p></dd>
-	 </dl>
+    <dt>[</dt><dd><p><code>signature(x = "Lagged1d", i = "numeric", j = "ANY", drop = "ANY")</code>: ...</p></dd>
+    <dt>show</dt><dd><p><code>signature(object = "Lagged1d")</code>: ...</p></dd>
+    <dt>whichLagged</dt><dd><p><code>signature(x = "Lagged1d", y = "missing")</code>: ...</p></dd></dl>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
