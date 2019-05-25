@@ -2,7 +2,7 @@ Package: lagged
 Type: Package
 Title: Classes and Methods for Lagged Objects
 Version: 0.2-2
-Date: 2019-05-16
+Date: 2019-05-25
 Authors@R: person(given = c("Georgi", "N."), family = "Boshnakov",
                   role = c("aut", "cre"), 
                   email = "georgi.boshnakov@manchester.ac.uk")

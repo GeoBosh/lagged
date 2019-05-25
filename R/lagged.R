@@ -52,15 +52,25 @@ setMethod("initialize", "FlexibleLagged",
           )
 
 setMethod("[", c(x = "Lagged", i = "missing"), function(x) x@data )
-setMethod("[", c(x = "FlexibleLagged", i = "missing"), function(x) x@data[] )
+setMethod("[", c(x = "FlexibleLagged", i = "missing", j = "missing"), function(x) x@data[] )
+setMethod("[", c(x = "FlexibleLagged", i = "missing", j = "ANY"), 
+          function(x, i, j, ..., drop) x@data[ , j, ..., drop] )
 
 setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "missing"), 
-          function(x, i, ...)
-              x@data[i, ..., drop = FALSE] 
+          function(x, i, ..., drop = FALSE){
+#browser()
+              if(nargs() == 2)
+                  x@data[i] 
+              else
+                  x@data[i, ] 
+          }
           )
 setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "logical"), 
-          function(x, i, ..., drop)
-              x@data[i, ..., drop = drop] 
+          function(x, i, ..., drop = FALSE)
+              if(nargs() == 3)
+                  x@data[i, drop = drop] 
+              else
+                  x@data[i, , drop = drop] 
           )
 
 setReplaceMethod("[", c(x = "Lagged", i = "missing"),
@@ -106,13 +116,18 @@ setReplaceMethod("[", c(x = "FlexibleLagged", i = "numeric"),
 ##               x
 ##           })
 
-setMethod("[[", c(x = "Lagged", i = "numeric"),
-          function(x, i){
+setMethod("[[", c(x = "Lagged", i = "numeric", j = "missing"),
+          function(x, i, j){
               if(length(i) == 1)
                   x[i, drop = TRUE]
               else
-                  stop("length of argument `i' must be equal to one")
+                  stop("the length of argument `i' must be equal to one")
           }
+          )
+
+setMethod("[[", c(x = "FlexibleLagged", i = "ANY", j = "ANY"),
+          function(x, i, j)
+              x@data[[i, j]]
           )
 
 setReplaceMethod("[[", c(x = "Lagged", i = "numeric"),
@@ -120,9 +135,26 @@ setReplaceMethod("[[", c(x = "Lagged", i = "numeric"),
                      if(length(i) == 1)
                          x[i] <- value
                      else
-                         stop("length of argument `i' must be equal to one")
+                         stop("the length of argument `i' must be equal to one")
                      x
                  })
+
+setMethod("[[", c(x = "Lagged2d", i = "numeric", j = "numeric"),
+          function(x, i, j){
+              if(length(i) == 1)
+                  x@data[i, j + 1, drop = TRUE]
+              else
+                  stop("the length of argument `i' must be equal to one")
+          }
+          )
+setMethod("[[", c(x = "Lagged2d", i = "numeric", j = "logical"),
+          function(x, i, j){
+              if(length(i) == 1)
+                  x@data[i, j, drop = TRUE]
+              else
+                  stop("the length of argument `i' must be equal to one")
+          }
+          )
 
 setMethod("Ops", c(e1 = "Lagged", e2 = "missing"),
           function(e1){
@@ -272,10 +304,114 @@ setMethod("[", c(x = "Lagged1d", i = "numeric"),
           function(x, i, drop) x@data[i+1] )
 
 setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "missing"),
-          function(x, i, ..., drop = FALSE) x@data[ , i+1, drop = FALSE] )
+          function(x, i, ..., drop = FALSE){
+              if(nargs() == 2)              # x[i]
+                  x@data[ , i+1, drop = FALSE] 
+              else                          # x[i, ]
+                  x@data[i, , drop = FALSE] 
+          }
+          )
 
 setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "logical"),
-          function(x, i, ..., drop = FALSE) x@data[ , i+1, drop = drop] )
+          function(x, i, ..., drop = FALSE){
+              if(nposargs(sys.call()) == 2) # x[i]
+                  x@data[ , i+1, drop = drop]
+              else                          # x[i, ]
+                  x@data[i, , drop = drop]
+          } 
+          )
+
+setMethod("[", c(x = "Lagged2d", i = "numeric", j = "numeric", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[i, j + 1, drop = FALSE]
+          )
+setMethod("[", c(x = "Lagged2d", i = "missing", j = "numeric", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[ , j + 1, drop = FALSE]
+          )
+
+setMethod("[", c(x = "Lagged2d", i = "ANY", j = "ANY", drop = "character"),
+          ## vedry old code, modelled after the method for 'slMatrix'
+          function(x, i, j, ..., drop = "sl"){  
+              ## for now, don't write about this method in the documentation;
+              ## it will certainly change
+
+              y <- x@data
+              period <- nrow(y)
+              if(missing(i))
+                  i <- 1:nrow(y)
+              if(missing(j))
+                  j <- 0:maxLag(x)
+
+              ## TODO: should set 'drop = FALSE' when extracting below but keep it for now in
+              ##    case old code depends on the current. In particular this is almost
+              ##    certainly so when extracting single values.
+              switch(drop,
+                     ## "sl" is for completeness, it is the default without this method
+                     "sl" = {
+                         season <- i
+                         lag <- pc.omitneg(j, ncol(x)-1)
+                         res <- y[season, lag+1]   # lag+1 because lags start from zero
+                     },
+                     "tt" = {
+                         res <- myouter(i, j, function(ii, jj){
+                             wrk <- toSeasonPair(ii, jj, period)
+                             season <- wrk$season
+                             lag <- wrk$lag
+                             y[season, lag + 1]
+                         }
+                         )
+                     },
+                     "tl" = {
+                         season <- toSeason(i, period)
+                         lag <- j
+                         res <- y[season, lag + 1]      # lag+1 because lags start from zero.
+                     },
+                     "tl+-" = {
+                         if(length(j) == 1){
+                             if(j>=0){                   # this works only for scalar  j
+                                 season <- toSeason(i, period)
+                                 lag <- j
+                             }else{
+                                 season <- toSeason(i - j, period)
+                                 lag <- -j
+                             }
+                             res <- y[season, lag+1] # lag+1 because lags start from zero.
+                         }else{
+                             res <- matrix(NA, nrow = length(i), ncol = length(j))
+                             for(k in 1:length(j)){
+                                 if(j[k] >= 0){         # this works only for scalar  j
+                                     season <- toSeason(i, period)
+                                     lag <- j[k]
+                                 }else{
+                                     season <- toSeason(i - j[k], period)
+                                     lag <- -j[k]
+                                 }
+                                 res[ , k] <- y[season, lag+1]#lag+1 as lags start from zero.
+                             }
+                         }
+                     },
+                     "t+l,l+-" = {
+                         res <- matrix(NA, nrow = length(i), ncol = length(j))
+                         for(k in 1:length(j)){
+                             res[ , k] <- x[i + j[k], j[k], drop = "tl+-"]
+                         }
+                     },
+                     ## 2016-01-01 TODO: case "co" seems to be meant for j - scalar.
+                     "co" = {
+                         season <- toSeason(i, period)
+                         lag <- j
+                         if(lag < 0 || lag > maxLag(x) )
+                             res <- 0
+                         else{
+                             res <- y[season, lag + 1] # lag+1 because lags start from zero.
+                         }
+                     },
+                     stop("Invalid arg. type, must be one of \"sl\", \"tt\" or \"tl\".")
+                     )
+              res
+          }
+          )
 
 setMethod("[", c(x = "Lagged3d", i = "numeric", j = "missing", drop = "missing"),
           function(x, i, ..., drop = FALSE) x@data[, , i+1, drop = FALSE] )

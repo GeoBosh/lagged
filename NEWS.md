@@ -15,11 +15,18 @@
   default prototype was giving invalid objects in some cases,
   e.g. `new("FlexibleLagged")`.
 
-- add `"maxLag<-"` method for `FlexibleLagged` objects.
+- added `"maxLag<-"` method for `FlexibleLagged` objects.
 
 - the "[[" and "[" methods for `FlexibleLagged` were not completely in line with
   the other Lagged classes (and the documentation) for index of length one.
-  
+
+- for "Lagged2d" objects indexing with two indices is now defined and works
+  naturally in a matrix-like way: the first index, `i`, takes values in `1:d`,
+  where `d` is the number of seasons and the second index, `j`, in
+  `0:maxlag`. As for matrices, an empty index designates the whole range in the
+  corresponding extent.
+
+
 
 # lagged 0.2-1
 

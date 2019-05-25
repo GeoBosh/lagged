@@ -125,7 +125,9 @@ necessary, specialised methods are defined for "FlexibleLagged".
 Subscripting with ~i~ missing, returns the raw data.
 #+BEGIN_SRC R
 setMethod("[", c(x = "Lagged", i = "missing"), function(x) x@data )
-setMethod("[", c(x = "FlexibleLagged", i = "missing"), function(x) x@data[] )
+setMethod("[", c(x = "FlexibleLagged", i = "missing", j = "missing"), function(x) x@data[] )
+setMethod("[", c(x = "FlexibleLagged", i = "missing", j = "ANY"), 
+          function(x, i, j, ..., drop) x@data[ , j, ..., drop] )
 #+END_SRC
 
 When ~i~ is present, indexing depends on the type of the data slot and so is defined by
@@ -143,12 +145,20 @@ I created separate methods for ~drop~ since just omitting it from the method sig
 ~findMethods("FlexibleLagged")~ shows that the default for drop in the method is ~TRUE~).
 #+BEGIN_SRC R
 setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "missing"), 
-          function(x, i, ...)
-              x@data[i, ..., drop = FALSE] 
+          function(x, i, ..., drop = FALSE){
+#browser()
+              if(nargs() == 2)
+                  x@data[i] 
+              else
+                  x@data[i, ] 
+          }
           )
 setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "logical"), 
-          function(x, i, ..., drop)
-              x@data[i, ..., drop = drop] 
+          function(x, i, ..., drop = FALSE)
+              if(nargs() == 3)
+                  x@data[i, drop = drop] 
+              else
+                  x@data[i, , drop = drop] 
           )
 #+END_SRC
 
@@ -225,20 +235,26 @@ This defines a default method. For efficiency specific classes can define versio
 calling the generic "[[". If multi-seasons are supported the check for length equal to one
 should be adapted accordingly.
 #+BEGIN_SRC R
-setMethod("[[", c(x = "Lagged", i = "numeric"),
-          function(x, i){
+setMethod("[[", c(x = "Lagged", i = "numeric", j = "missing"),
+          function(x, i, j){
               if(length(i) == 1)
                   x[i, drop = TRUE]
               else
-                  stop("length of argument `i' must be equal to one")
+                  stop("the length of argument `i' must be equal to one")
           }
+          )
+
+setMethod("[[", c(x = "FlexibleLagged", i = "ANY", j = "ANY"),
+          function(x, i, j)
+              x@data[[i, j]]
           )
 #+END_SRC
 Note the use of ~drop = TRUE~.
-
-
 *TODO:* The use of ~drop = TRUE~ maybe needs some further thought. Maybe something that drops
 only the index corresponding to the lag is preferable and such behaviour should be documented!
+
+*Note:* After more thought, ~drop = TRUE~ is excellent for "[[" and could be used in more
+    circumstances. 
 
 The replace method works similarly:
 #+BEGIN_SRC R
@@ -247,10 +263,36 @@ setReplaceMethod("[[", c(x = "Lagged", i = "numeric"),
                      if(length(i) == 1)
                          x[i] <- value
                      else
-                         stop("length of argument `i' must be equal to one")
+                         stop("the length of argument `i' must be equal to one")
                      x
                  })
 #+END_SRC
+
+
+For "Lagged2d" define further methods. When ~j~ is present the indexing is matrix-like with
+~drop = TRUE~. For now restrict this to the case when ~i~ is a single number (but ~j~ can be
+a vector). *TODO:* It is probably imperative here to distinguish ~x[[i,] ]~ and ~x[[i] ]~
+(but this should be done in the method with missing ~j~).
+#+BEGIN_SRC R
+setMethod("[[", c(x = "Lagged2d", i = "numeric", j = "numeric"),
+          function(x, i, j){
+              if(length(i) == 1)
+                  x@data[i, j + 1, drop = TRUE]
+              else
+                  stop("the length of argument `i' must be equal to one")
+          }
+          )
+setMethod("[[", c(x = "Lagged2d", i = "numeric", j = "logical"),
+          function(x, i, j){
+              if(length(i) == 1)
+                  x@data[i, j, drop = TRUE]
+              else
+                  stop("the length of argument `i' must be equal to one")
+          }
+          )
+#+END_SRC
+
+
 
 
 
@@ -576,13 +618,137 @@ setMethod("[", c(x = "Lagged1d", i = "numeric"),
     Need some thought to streamline that old stuff. However, it may be better not to put this on
     ="Lagged2d"= but introduce subclass, say ="LaggedSL" of ="Lagged2d"= and define modified
     methods for that, streamlining in the process.
+    (*NOTE:* mostly done, see below.)   
+
+2019-05-18: New "[" methods for "Lagged2d". Decided to use argument ~drop~ for the argument
+corresponding to ~type~ in "slMatrix". 
+
+2019-05-25: Decided eventually to handle the difference between ~x[i]~ and ~x[i,]~, since
+otherwise confusion arises.  Both go to the methods with ~j~ missing. The complete solution
+is with ~gbutils::nposargs()~). It is used when drop is logical. When drop is missing, it is
+sufficient to use ~nargs()~ and avoid additional overhead for the most common case, ~x[i]~.
 #+BEGIN_SRC R
 setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "missing"),
-          function(x, i, ..., drop = FALSE) x@data[ , i+1, drop = FALSE] )
+          function(x, i, ..., drop = FALSE){
+              if(nargs() == 2)              # x[i]
+                  x@data[ , i+1, drop = FALSE] 
+              else                          # x[i, ]
+                  x@data[i, , drop = FALSE] 
+          }
+          )
 
 setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "logical"),
-          function(x, i, ..., drop = FALSE) x@data[ , i+1, drop = drop] )
+          function(x, i, ..., drop = FALSE){
+              if(nposargs(sys.call()) == 2) # x[i]
+                  x@data[ , i+1, drop = drop]
+              else                          # x[i, ]
+                  x@data[i, , drop = drop]
+          } 
+          )
+#+END_SRC
 
+Non-missing ~j~. 
+#+BEGIN_SRC R
+setMethod("[", c(x = "Lagged2d", i = "numeric", j = "numeric", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[i, j + 1, drop = FALSE]
+          )
+setMethod("[", c(x = "Lagged2d", i = "missing", j = "numeric", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[ , j + 1, drop = FALSE]
+          )
+#+END_SRC
+This implements (part of?) the functionality of "slMatrix" indexing. I decided to 
+use argument ~drop~, even though it is generally not a good idea to overload an argument
+designed for another purpose. However, from a more general perspective, ~drop~ controls the
+shape of the result. 
+#+BEGIN_SRC R
+setMethod("[", c(x = "Lagged2d", i = "ANY", j = "ANY", drop = "character"),
+          ## vedry old code, modelled after the method for 'slMatrix'
+          function(x, i, j, ..., drop = "sl"){  
+              ## for now, don't write about this method in the documentation;
+              ## it will certainly change
+
+              y <- x@data
+              period <- nrow(y)
+              if(missing(i))
+                  i <- 1:nrow(y)
+              if(missing(j))
+                  j <- 0:maxLag(x)
+
+              ## TODO: should set 'drop = FALSE' when extracting below but keep it for now in
+              ##    case old code depends on the current. In particular this is almost
+              ##    certainly so when extracting single values.
+              switch(drop,
+                     ## "sl" is for completeness, it is the default without this method
+                     "sl" = {
+                         season <- i
+                         lag <- pc.omitneg(j, ncol(x)-1)
+                         res <- y[season, lag+1]   # lag+1 because lags start from zero
+                     },
+                     "tt" = {
+                         res <- myouter(i, j, function(ii, jj){
+                             wrk <- toSeasonPair(ii, jj, period)
+                             season <- wrk$season
+                             lag <- wrk$lag
+                             y[season, lag + 1]
+                         }
+                         )
+                     },
+                     "tl" = {
+                         season <- toSeason(i, period)
+                         lag <- j
+                         res <- y[season, lag + 1]      # lag+1 because lags start from zero.
+                     },
+                     "tl+-" = {
+                         if(length(j) == 1){
+                             if(j>=0){                   # this works only for scalar  j
+                                 season <- toSeason(i, period)
+                                 lag <- j
+                             }else{
+                                 season <- toSeason(i - j, period)
+                                 lag <- -j
+                             }
+                             res <- y[season, lag+1] # lag+1 because lags start from zero.
+                         }else{
+                             res <- matrix(NA, nrow = length(i), ncol = length(j))
+                             for(k in 1:length(j)){
+                                 if(j[k] >= 0){         # this works only for scalar  j
+                                     season <- toSeason(i, period)
+                                     lag <- j[k]
+                                 }else{
+                                     season <- toSeason(i - j[k], period)
+                                     lag <- -j[k]
+                                 }
+                                 res[ , k] <- y[season, lag+1]#lag+1 as lags start from zero.
+                             }
+                         }
+                     },
+                     "t+l,l+-" = {
+                         res <- matrix(NA, nrow = length(i), ncol = length(j))
+                         for(k in 1:length(j)){
+                             res[ , k] <- x[i + j[k], j[k], drop = "tl+-"]
+                         }
+                     },
+                     ## 2016-01-01 TODO: case "co" seems to be meant for j - scalar.
+                     "co" = {
+                         season <- toSeason(i, period)
+                         lag <- j
+                         if(lag < 0 || lag > maxLag(x) )
+                             res <- 0
+                         else{
+                             res <- y[season, lag + 1] # lag+1 because lags start from zero.
+                         }
+                     },
+                     stop("Invalid arg. type, must be one of \"sl\", \"tt\" or \"tl\".")
+                     )
+              res
+          }
+          )
+#+END_SRC
+
+
+#+BEGIN_SRC R
 setMethod("[", c(x = "Lagged3d", i = "numeric", j = "missing", drop = "missing"),
           function(x, i, ..., drop = FALSE) x@data[, , i+1, drop = FALSE] )
 setMethod("[", c(x = "Lagged3d", i = "numeric", j = "missing", drop = "logical"),
