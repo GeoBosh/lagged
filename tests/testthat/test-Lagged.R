@@ -93,6 +93,9 @@ test_that("Lagged classes: indexing",
     expect_equal(a_flex[0],   a_flex[0, drop = FALSE])
     expect_equal(a_flex[[0]], a_flex[0, drop = TRUE])
 
+    expect_equal(a_flex[0, ],   a_flex[0, , drop = FALSE])
+
+
     ## maxLag, maxLag<-
     ##    TODO: extending with "maxLag<-"()
 
@@ -121,3 +124,75 @@ test_that("Lagged classes: indexing",
 
 
 
+test_that(".whichNativeLagged is ok",
+{
+    expect_identical(.whichNativeLagged(1:3), "Lagged1d")
+    expect_identical(.whichNativeLagged(1:3 / 4), "Lagged1d")
+
+    expect_identical(.whichNativeLagged(matrix(1:12, 4)), "Lagged2d")
+    expect_identical(.whichNativeLagged(array(1:24, dim = c(4,3,2))), "Lagged3d")
+
+    ## TODO: was this really the intent of this function (for the case of Lagged objects?
+    expect_identical(.whichNativeLagged(new("Lagged1d")), "FlexibleLagged")
+    expect_identical(.whichNativeLagged(new("Lagged2d")), "FlexibleLagged")
+    expect_identical(.whichNativeLagged(new("Lagged3d")), "FlexibleLagged")
+
+    expect_identical(.whichNativeLagged(new("Lagged3d")), "FlexibleLagged")
+
+    ## otherwise
+    expect_true(is.na(.whichNativeLagged(sin))) # a function
+})
+
+test_that("Lagged classes: initialisation",
+{
+    expect_equal_to_reference(new("FlexibleLagged"), "fl0.RDS")
+
+    expect_equal(class( Lagged(data = new("Lagged1d")) ), "FlexibleLagged", FALSE)
+    expect_equal(class( Lagged(data = new("Lagged2d")) ), "FlexibleLagged", FALSE)
+    expect_equal(class( Lagged(data = new("Lagged3d")) ), "FlexibleLagged", FALSE)
+
+    fl  <- new("FlexibleLagged", data = 1:3)
+    fla <- new("FlexibleLagged", data = fl)
+    expect_equal(class(fl@data), "Lagged1d", FALSE)
+    expect_equal(class(fla@data), "Lagged1d", FALSE)
+    expect_equal(fla@data, fl@data)
+    expect_identical(fla@data, fl@data)
+
+    acf_ap <- acf(AirPassengers, plot = FALSE)
+    expect_identical(Lagged(acf_ap), acf2Lagged(acf_ap))
+
+    ## cars is a data.frame
+    expect_error(Lagged(cars), "I don't know how to create a Lagged object from the given data")
+
+
+
+
+})
+
+
+test_that("dataWithLagNames() is ok",
+{
+    ## length-zero objects are returned as is
+    expect_identical(dataWithLagNames(numeric(0)), numeric(0))
+    m0 <- matrix(0, nrow = 0, ncol = 3)
+    expect_identical(dataWithLagNames(m0), m0)
+
+    expect_equal(dataWithLagNames(1:3), c(Lag_0 = 1, Lag_1 = 2,  Lag_2 =3))
+    expect_equal(colnames(dataWithLagNames(matrix(1:12, nrow = 3))), paste0("Lag_", 0:3))
+
+    a432 <- dataWithLagNames(array(1:24, dim = c(4,3,2)))
+    expect_identical(dimnames(a432), list(rep("", 4), rep("", 3), c("Lag_0", "Lag_1")))
+})
+
+test_that("Lagged: show",
+{
+
+    fl  <- new("FlexibleLagged", data = 1:3)
+    expect_output(show(fl))
+
+
+    expect_output(show(new("Lagged1d")))
+    expect_output(show(new("Lagged2d")))
+    expect_output(show(new("Lagged3d")))
+
+})
