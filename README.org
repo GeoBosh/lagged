@@ -7,9 +7,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/GeoBosh/lagged/badge.svg?branch=master)](https://coveralls.io/github/GeoBosh/lagged?branch=master)
 #+END_EXPORT
 
-
-#+END_EXPORT
-
 R package 'lagged' provides classes and methods for objects, like autocovariances, whose
 natural indexing starts from zero.
 
