@@ -79,6 +79,30 @@ test_that("Lagged classes: indexing",
     expect_equal(v_flex[0],   v_flex[0, drop = FALSE])
     expect_equal(v_flex[[0]], v_flex[0, drop = TRUE])
 
+    expect_equal(v_flex[], v)
+    v_flex2 <- v_flex
+    v_flex2[3:4] <- 0
+    expect_equal(v_flex2[], c(v[1:3], 0, 0, v[6:12]))
+
+    v_flex3 <- v_flex
+    v_flex3[] <- 1:5
+    expect_equal(v_flex3[], 1:5) # length changed
+
+    expect_error(v_flex3[[c(1,2)]], "the length of argument `i' must be equal to one")
+
+    ## the data part is 1d here, so this gives error:
+    expect_error(v_flex3[[1, 2]], "incorrect number of subscripts")
+    m4_3 <- matrix(1:12, nrow = 4)
+    m4_3fl <- Lagged(m4_3)
+    expect_equal(Lagged(m4_3)[[1, 2]], m4_3[1, 3]) # second index is lag
+    expect_equal(-(-Lagged(m4_3)), Lagged(m4_3)) # unary -
+    expect_equal(Lagged(m4_3) + Lagged(m4_3), 2 * Lagged(m4_3))
+
+    as.vector(m4_3fl)
+    as.matrix(m4_3fl)
+    expect_equal(maxLag(m4_3fl),2)
+    maxLag(m4_3fl) <- 1
+
     m_flex <- new("FlexibleLagged", data = m)
     expect_identical(m_flex@data, m_lagged)
     expect_equal(m_flex[0], m_lagged[0])
