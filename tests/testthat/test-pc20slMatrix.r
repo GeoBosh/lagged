@@ -51,10 +51,16 @@ test_that("slMatrix",
     msl[] <- 9
 
     msl[1,2, type = "tt"] <- NA
+    ## expect_warning(msl[1,1:2, type = "tt"] <- c(111, 222))
+
+
     msl[1,2, type = "tl"] <- NA
-    msl[1,2, type = "tl+-"] <- 9999
     msl[1,2, type = "tl+-"] <- 9999
     msl[1,2, type = "co"] <- 5555
 
+    expect_equal(msl[1, -2, type = "co"], 0)
+
+    expect_output(msl[1, -2, type = "co"] <- 5555, "attempt to assign a coefficient value at negative/large index")
+    expect_error(nSeasons(msl) <- 5, "unable to find an inherited method for function 'nSeasons<-'")
 
 })

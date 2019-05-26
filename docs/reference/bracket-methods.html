@@ -123,16 +123,15 @@
   data. This is equivalent to using <code>x[0:maxLag(x)]</code>.</p>
 <p>Subscripting (with one index) is defined naturally. It returns the
   suitably subscripted <code>data</code> slot (for "FlexibleLagged" it is the
-  data slot of the data slot). In package <span class="pkg">sarima</span> this is
-  <code>"numeric"</code> or <code>"array"</code>.  For indices larger than the
-  maximal lag the values are <code>NA</code>.</p>
+  data slot of the data slot).  For indices larger than the maximal lag
+  the values are <code>NA</code>.</p>
 <p>Currently negative indices work similarly to the standard R indexing
   in that negative indices are used to drop elements. However, for
   \(k&gt;0\), using \(-k\) as an index drops the element for lag
   \(k-2\), not \(k\) (since the subsetting is done by something like
   <code>x@data[i+1]</code>). This is implementation detail, so it may be
   changed and should not be relied upon.</p>
-<p>The following methods for <code>"["</code> are currently defined in package
+    <p>The following methods for <code>"["</code> are currently defined in package
   "lagged":</p><dl class='dl-horizontal'>
     <dt><code>signature(x = "FlexibleLagged", i = "missing", j = "ANY", drop = "ANY")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "FlexibleLagged", i = "numeric", j = "missing", 
           drop = "logical")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "FlexibleLagged", i = "numeric", j = "missing", 
@@ -140,7 +139,10 @@
           drop = "logical")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "Lagged2d", i = "numeric", j = "missing", 
           drop = "missing")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "Lagged3d", i = "numeric", j = "missing", 
           drop = "logical")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "Lagged3d", i = "numeric", j = "missing", 
-          drop = "missing")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "slMatrix", i = "ANY", j = "ANY", drop = "ANY")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd></dl>
+          drop = "missing")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "slMatrix", i = "ANY", j = "ANY", drop = "ANY")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "Lagged2d", i = "ANY", j = "ANY", drop = "character")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "Lagged2d", i = "missing", j = "numeric", 
+          drop = "missing")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "Lagged2d", i = "numeric", j = "numeric", 
+          drop = "missing")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd><dt><code>signature(x = "FlexibleLagged", i = "missing", j = "missing", 
+          drop = "ANY")</code></dt><dd><p><!-- %%  ~~describe this method here~~ --></p></dd></dl>
     
 
   </div>

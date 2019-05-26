@@ -57,7 +57,7 @@ maxLag(object, \dots)
 }}}
 %\note{}
 \seealso{
-  \code{\link{maxLag<-}}
+  \code{"\link{maxLag<-}"}
 }
 \examples{
 ## 1d

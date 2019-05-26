@@ -1,0 +1,34 @@
+
+reference:
+  - title: Create Lagged objects
+    contents:
+      - Lagged
+      - slMatrix
+
+  - title: "Lagged classes"
+    contents:
+      - FlexibleLagged-class
+      - Lagged-class
+      - Lagged1d-class
+      - Lagged2d-class
+      - Lagged3d-class
+      - slMatrix-class
+
+  - title: "Indexing"
+    contents:
+      - "[-methods"
+      - "[<--methods"
+      - "[[-methods"
+      - "[[<--methods"
+
+  - title: "Other"
+    contents:
+      - maxLag
+      - "maxLag<-"
+      - "nSeasons"
+      - "nSeasons<-"
+      - dataWithLagNames
+      - acf2Lagged
+      - sl2acfbase
+      - acfbase2sl
+      - sl2vecacf

@@ -114,8 +114,9 @@
 <li><p>new <code>as()</code> method to convert <code>matrix</code> to <code>slMatrix</code>.</p></li>
 <li><p>the initialisation method for <code>FlexibleLagged</code> now matches argument <code>data</code> only if it is named, i.e. when explicitly supplied. This puts it in line with the default initialisation methods and, in particular, makes it easier to initialise subclasses of <code>FlexibleLagged</code>.</p></li>
 <li><p>set a prototype, <code>new("Lagged1d")</code>, for the data slot of <code>FlexibleLagged</code>. The default prototype was giving invalid objects in some cases, e.g. <code>new("FlexibleLagged")</code>.</p></li>
-<li><p>add <code>"maxLag&lt;-"</code> method for <code>FlexibleLagged</code> objects.</p></li>
+<li><p>added <code>"maxLag&lt;-"</code> method for <code>FlexibleLagged</code> objects.</p></li>
 <li><p>the “[[” and “[” methods for <code>FlexibleLagged</code> were not completely in line with the other Lagged classes (and the documentation) for index of length one.</p></li>
+<li><p>for “Lagged2d” objects indexing with two indices is now defined and works naturally in a matrix-like way: the first index, <code>i</code>, takes values in <code>1:d</code>, where <code>d</code> is the number of seasons and the second index, <code>j</code>, in <code>0:maxlag</code>. As for matrices, an empty index designates the whole range in the corresponding extent.</p></li>
 </ul>
 </div>
     <div id="lagged-0-2-1" class="section level1">

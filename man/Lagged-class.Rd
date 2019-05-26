@@ -36,32 +36,6 @@ singleton.
       underlying data. This is equivalent to using
       \code{x[1:maxLag(x)]}.
     }
-    %\item{[}{\code{signature(x = "Lagged", i = "numeric")}:
-    %
-    %  Subscripting (with one index) is defined naturally. It returns the
-    %  suitably subscripted \code{data} slot. Note that the returned
-    %  value is not from class "Lagged" but from that of the data slot
-    %  (in package \pkg{sarima} this is \code{"numeric"} or
-    %  \code{"array"}.  For indices larger than the maximal lag the
-    %  values are NA.
-    %
-    %  Currently negative indices work similarly to the standard R
-    %  indexing in that negative indices are used to drop
-    %  elements. However, for \eqn{k>0}, using \eqn{-k} as an index drops
-    %  the element for lag \eqn{k-2}, not \eqn{k} (since the subsetting
-    %  is done by something like \code{x@data[i+1]}). This may be changed
-    %  and should not bee relied upon.
-    %
-    %}
-    %
-    %This method is defined for specific subclasses, not for "Lagged":
-    %\item{[<-}{\code{signature(x = "Lagged", i = "numeric")}:
-    %
-    %  Replace the values for the specified indices with the new
-    %  values.
-    %
-    %}
-
     \item{maxLag}{\code{signature(object = "Lagged")}:
       Gives the maximal lag in the object.
     }

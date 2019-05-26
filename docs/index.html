@@ -81,6 +81,39 @@
 <div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)
 <span class="kw">install_github</span>(<span class="st">"GeoBosh/lagged"</span>)</code></pre></div>
 </div>
+<div id="overview" class="section level1">
+<h1 class="hasAnchor">
+<a href="#overview" class="anchor"></a>Overview</h1>
+<p>The package provides several classes with methods for indexing starting from zero. Objects can be created with the function <code><a href="reference/Lagged.html">Lagged()</a></code>. It returns a suitable Lagged object from a class suitable for the argument:</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(lagged)
+v_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)                           <span class="co"># 1d object</span>
+m_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">12</span>, <span class="dt">nrow =</span> <span class="dv">4</span>))        <span class="co"># 2d object</span>
+a_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/array.html">array</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">24</span>, <span class="dt">dim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">2</span>)))  <span class="co"># 3d object</span></code></pre></div>
+<p>It recognises also <code>"acf"</code> objects from base R time series functions:</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">ap_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/acf.html">acf</a></span>(AirPassengers, <span class="dt">plot =</span> <span class="ot">FALSE</span>))</code></pre></div>
+<p>The maximal lag stored in the object can be obtained with <code><a href="reference/maxLag.html">maxLag()</a></code>:</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw"><a href="reference/maxLag.html">maxLag</a></span>(v_lagged)
+<span class="kw"><a href="reference/maxLag.html">maxLag</a></span>(m_lagged)
+<span class="kw"><a href="reference/maxLag.html">maxLag</a></span>(a_lagged)</code></pre></div>
+<p>The length of the objects is equal to <code>maxlag(object) + 1</code>.</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(v_lagged)
+<span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(m_lagged)
+<span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(a_lagged)</code></pre></div>
+<p>Subsetting with <code>"["</code> drops the laggedness and returns vector, matrix, or array, depending on the dimension of the object. Subsetting with one index gives the data for the requested lags:</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">tmp &lt;-<span class="st"> </span>v_lagged[<span class="dv">0</span><span class="op">:</span><span class="dv">2</span>]
+tmp &lt;-<span class="st"> </span>m_lagged[<span class="dv">0</span><span class="op">:</span><span class="dv">2</span>]
+tmp &lt;-<span class="st"> </span>a_lagged[<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>]</code></pre></div>
+<p>Values beyond the maximal lag are <code>NA</code>. Dimensions are not dropped if an extent has length one (i.e. <code>drop = FALSE</code>):</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">v_lagged[<span class="dv">0</span>]
+m_lagged[<span class="dv">0</span>]
+a_lagged[<span class="dv">0</span>]</code></pre></div>
+<p>To drop dimensions, use “[[”:</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">v_lagged[[<span class="dv">0</span>]]
+m_lagged[[<span class="dv">0</span>]]
+a_lagged[[<span class="dv">0</span>]]</code></pre></div>
+<p>Arithmetic operations and mathematical functions are defined naturally on lagged objects. The shorter one is extended with <code>NA</code>’s to the length of the longer.</p>
+<p>Operations between lagged and base R objects are defined, as well. However, it is an error to do operations between objects whose dimensions do not match, unless the base R object is a scalar, or, more generally, has the size of <code>x[[0] ]</code>.</p>
+</div>
 
   </div>
 
@@ -113,6 +146,8 @@
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://cran.r-project.org/package=lagged"><img src="http://www.r-pkg.org/badges/version/lagged" alt="CRANStatusBadge"></a></li>
+<li><a href="https://travis-ci.com/GeoBosh/lagged"><img src="https://travis-ci.com/GeoBosh/lagged.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://coveralls.io/github/GeoBosh/lagged?branch=master"><img src="https://coveralls.io/repos/github/GeoBosh/lagged/badge.svg?branch=master" alt="Coverage Status"></a></li>
 </ul>
 </div>
 </div>

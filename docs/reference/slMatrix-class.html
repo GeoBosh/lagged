@@ -153,44 +153,43 @@
 	value = "ANY")</code>: ...</p></dd>
     <dt>[</dt><dd><p><code>signature(x = "slMatrix", i = "ANY", j = "ANY", drop
 	= "ANY")</code>:
-    The indexing method is quite flexible and allows to extract parts of
-  <code>slMatrix</code> objects in a variety of ways. It returns an ordinary
-  matrix or, if <code>drop = TRUE</code>, vector.
-    The syntax for indexing is similar to that for ordinary matrices with
-  some features specific to the periodic nature of the first index. The
-  named parameters are <code>i</code>, <code>j</code>, and <code>type</code>. Both
-  <code>i</code> and <code>j</code> can be vectors. The interpretation of <code>i</code>
-  and <code>j</code> depends on <code>type</code>.
+    The indexing method is quite flexible and allows to extract parts
+      of <code>slMatrix</code> objects in a variety of ways. It returns an
+      ordinary matrix or, if <code>drop = TRUE</code>, vector.
+    The syntax for indexing is similar to that for ordinary matrices
+      with some features specific to the periodic nature of the first
+      index. The named parameters are <code>i</code>, <code>j</code>, and
+      <code>type</code>. Both <code>i</code> and <code>j</code> can be vectors. The
+      interpretation of <code>i</code> and <code>j</code> depends on <code>type</code>.
     <code>x[i,j]</code> (or <code>x[i,j,type="sl"]</code>) refers to the value for
-  season <code>i</code> and lag <code>j</code>.
-  This is referred to as standard season-lag pair, meaning that the
-  elements of <code>i</code> must be in the range 1,...,d, where d is the
-  number of seasons and the lags must be non-negative. Negative indices
-  have the usual effect of removing the corresponding elements. A zero
-  element for lag is admissible.
-    <code>x[i,j,type="tl"]</code> is similar to "sl" but <code>i</code> is allowed to
-  take any (integer) values. These are reduced modulo the number of
-  seasons to the 1,...,d, range.
-    <code>x[i,j,type="tl+-"]</code> This allows also the lags to be negative.
-    <code>x[i,j,type="co"]</code> ("co" stands for "coefficient") This assumes
-  that the values for negative lags and lags larger than <code>maxlag</code>
-  are 0. If assignment is attempted for such lags, a message is issued
-  and the assignment is ignored.
-    <code>x[i,j,type="tt"]</code> both arguments have the meaning of time. If
-  <code>i</code> and <code>j</code> are scalars the pair <code>i,j</code> is converted to
-  standard <code>s,l</code> pair and the value assigned to the relevant
-  element. If <code>i</code> and/or <code>j</code> are vectors, they are crossed and
-  the procedure is done for each pair.
-    If several values need to be assigned to the same <code>s,l</code> pair a
-  warning is isssued if these values are not all equal.
-    Obviously, whereever negative arguments are allowed, elements to omit
-  cannot be specified with negative indices.
+      season <code>i</code> and lag <code>j</code>.  This is referred to as standard
+      season-lag pair, meaning that the elements of <code>i</code> must be in
+      the range 1,...,d, where d is the number of seasons and the lags
+      must be non-negative. Negative indices have the usual effect of
+      removing the corresponding elements. A zero element for lag is
+      admissible.
+    <code>x[i,j,type="tl"]</code> is similar to "sl" but <code>i</code> is allowed
+      to take any (integer) values. These are reduced modulo the number
+      of seasons to the 1,...,d, range.
+    <code>x[i,j,type="tl+-"]</code> This allows also the lags to be
+      negative.
+    <code>x[i,j,type="co"]</code> ("co" stands for "coefficient") This
+      assumes that the values for negative lags and lags larger than
+      <code>maxlag</code> are 0. If assignment is attempted for such lags, a
+      message is issued and the assignment is ignored.
+    <code>x[i,j,type="tt"]</code> both arguments have the meaning of
+      time. If <code>i</code> and <code>j</code> are scalars the pair <code>i,j</code> is
+      converted to standard <code>s,l</code> pair and the value assigned to
+      the relevant element. If <code>i</code> and/or <code>j</code> are vectors,
+      they are crossed and the procedure is done for each pair.
+    If several values need to be assigned to the same <code>s,l</code> pair
+      a warning is isssued if these values are not all equal.
+    Obviously, whereever negative arguments are allowed, elements to
+      omit cannot be specified with negative indices.
     see <code><a href='bracket-methods.html'>[-methods</a></code>. <!-- % ] --></p></dd>
     <dt>maxLag</dt><dd><p><code>signature(x = "slMatrix")</code>:
       maximum lag available for storage.</p></dd>
-    % \item{pc.nseasons}{\code{signature(x = "slMatrix")}: number of
-    %   seasons }
-  </dl>
+    </dl>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -206,13 +205,12 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># data(ex1f)</span>
-<span class='no'>m1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>( <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>0.81</span>,<span class='fl'>0</span>),<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>0.4972376</span>, <span class='fl'>0.4972376</span>) )
+    <pre class="examples"><div class='input'><span class='no'>m1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>0.81</span>, <span class='fl'>0</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>0.4972376</span>, <span class='fl'>0.4972376</span>))
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='slMatrix.html'>slMatrix</a></span>(<span class='no'>m1</span>)
-<span class='no'>x</span>[<span class='fl'>1</span>,<span class='fl'>0</span>]</div><div class='output co'>#&gt; [1] 1</div><div class='input'><span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>2</span>,<span class='fl'>0</span>:<span class='fl'>1</span>]</div><div class='output co'>#&gt;       lag
+<span class='no'>x</span>[<span class='fl'>1</span>, <span class='fl'>0</span>]</div><div class='output co'>#&gt; [1] 1</div><div class='input'><span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>2</span>, <span class='fl'>0</span>:<span class='fl'>1</span>]</div><div class='output co'>#&gt;       lag
 #&gt; season 0         1
 #&gt;      1 1 0.8100000
-#&gt;      2 1 0.4972376</div><div class='input'><span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>3</span>,<span class='fl'>1</span>:<span class='fl'>3</span>,<span class='kw'>type</span><span class='kw'>=</span><span class='st'>"tt"</span>]</div><div class='output co'>#&gt;           [,1]      [,2] [,3]
+#&gt;      2 1 0.4972376</div><div class='input'><span class='no'>x</span>[<span class='fl'>1</span>:<span class='fl'>3</span>, <span class='fl'>1</span>:<span class='fl'>3</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"tt"</span>]</div><div class='output co'>#&gt;           [,1]      [,2] [,3]
 #&gt; [1,] 1.0000000 0.4972376 0.00
 #&gt; [2,] 0.4972376 1.0000000 0.81
 #&gt; [3,] 0.0000000 0.8100000 1.00</div></pre>
