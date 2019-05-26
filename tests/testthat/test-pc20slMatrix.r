@@ -38,4 +38,23 @@ test_that("slMatrix",
     nSeasons(msl)
     maxLag(msl)
 
+    f <- function(t,s) 0.9^(abs(t-s))
+    slMatrix(period = 2,maxlag = 5,f = f, type = "tt")
+    slMatrix(period = 2,maxlag = 5,f = f, type = "sl")
+    slMatrix(period = 2,maxlag = 5,f = f, type = "tl")
+    expect_error(slMatrix(period = 2,maxlag = 5,f = f, type = "dummy"),
+                 "Invalid pctime index type, expected")
+
+    msl[1,2] <- 3
+    msl[1, ] <- 3
+    msl[ , 1] <- 9
+    msl[] <- 9
+
+    msl[1,2, type = "tt"] <- NA
+    msl[1,2, type = "tl"] <- NA
+    msl[1,2, type = "tl+-"] <- 9999
+    msl[1,2, type = "tl+-"] <- 9999
+    msl[1,2, type = "co"] <- 5555
+
+
 })
