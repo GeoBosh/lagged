@@ -10,6 +10,13 @@ test_that("Lagged classes: indexing",
     expect_equal(v_lagged[0],   v_lagged[0, drop = FALSE])
     expect_equal(v_lagged[[0]], v_lagged[0, drop = TRUE])
 
+    expect_equal(Lagged(1:4) + Lagged(1:2), Lagged(c(2, 4, NA, NA)))
+
+    expect_equal(Lagged(1:4) + 1:4, Lagged(1:4 + 1:4))
+    expect_equal(Lagged(1:4) + 1, Lagged(1:4 + 1))
+    expect_error(Lagged(1:4) + 1:2, "Incompatible length of operands in a binary operation")
+
+
     ## Lagged2d
     m <- matrix(1:12, nrow = 4)
     m_lagged <- Lagged(m)
@@ -24,6 +31,8 @@ test_that("Lagged classes: indexing",
 
     mm <- matrix(10:49, nrow = 4, byrow = TRUE)
     mm_lagged <- Lagged(mm)
+
+    as.matrix(mm_lagged)
 
     ## one index: lag
     expect_equal(ncol(mm_lagged[0]), 1)   # column vector
@@ -45,7 +54,10 @@ test_that("Lagged classes: indexing",
     expect_error(m_lagged[1, TRUE])
 
     ## TODO: put expectations here:
+    mm_lagged[1:4,1:4, drop = "sl"] # "sl" is the default, covered by  drop = "missing"
     mm_lagged[1:4,1:4, drop = "tt"]
+    mm_lagged[1:4,1:4, drop = "tl"]
+    expect_error(mm_lagged[1:4,1:4, drop = "dummy"], "Invalid arg. type, must be one of")
     mm_lagged[5:12, 1, drop = "tl+-"]
     mm_lagged[6:13, 1:4, drop = "tl+-"]
     mm_lagged[1, 4, drop = "co"]   # TODO: "co" may be worth a class
@@ -56,6 +68,13 @@ test_that("Lagged classes: indexing",
     mm_lagged[ 1:2, 4, drop = "co"] # 14 24
     mm_lagged[ 1:6, 4, drop = "co"] # 14 24 34 44 14 24
     mm_lagged[ 1:6, 0, drop = "co"] # 14 24 34 44 14 24
+
+    mmm_lagged <- Lagged(mm)
+    mmm_lagged[[1]]
+    mmm_lagged[[1, TRUE]]
+    mmm_lagged[[1, c(TRUE, FALSE)]]
+    expect_error(mmm_lagged[[1:2, c(TRUE, FALSE)]], "the length of argument `i' must be equal to one")
+
 
 
     ## Lagged3d
@@ -70,6 +89,7 @@ test_that("Lagged classes: indexing",
     expect_equal(a_lagged[0],   a_lagged[0, drop = FALSE])
     expect_equal(a_lagged[[0]], a_lagged[0, drop = TRUE])
 
+    as.array(a_lagged)
 
     ## as above for "FlexibleLagged"
     v_flex <- new("FlexibleLagged", data = v)
@@ -84,11 +104,33 @@ test_that("Lagged classes: indexing",
     v_flex2[3:4] <- 0
     expect_equal(v_flex2[], c(v[1:3], 0, 0, v[6:12]))
 
+    v_flex2[] <- v_flex
+    v_flex2[] <- v_flex@data
+    expect_error(v_flex2[] <- array(1, dim = c(2,2,2,2)), "Don't know what Lagged class to use for this value")
+
     v_flex3 <- v_flex
     v_flex3[] <- 1:5
-    expect_equal(v_flex3[], 1:5) # length changed
+    expect_equal(v_flex3[], 1:5) # length changes
 
+    v_flex3[[1]]
     expect_error(v_flex3[[c(1,2)]], "the length of argument `i' must be equal to one")
+
+    v_flex3      + v_flex3
+    v_flex3@data + v_flex3
+    v_flex3      + v_flex3@data
+    v_flex3 + 1
+    1 + v_flex3
+    round(v_flex3)
+    max(v_flex3)
+
+    as.numeric(v_flex3)
+    as.numeric(v_flex3@data)
+
+    as.array(v_flex3)
+    as.array(v_flex3@data)
+
+    as.vector(v_flex3@data)
+    as.vector(v_flex3)
 
     ## the data part is 1d here, so this gives error:
     expect_error(v_flex3[[1, 2]], "incorrect number of subscripts")
@@ -120,6 +162,7 @@ test_that("Lagged classes: indexing",
     expect_equal(a_flex[0, ],   a_flex[0, , drop = FALSE])
 
 
+
     ## maxLag, maxLag<-
     ##    TODO: extending with "maxLag<-"()
 
@@ -132,6 +175,15 @@ test_that("Lagged classes: indexing",
     expect_equal(maxLag(v2_lagged), 2)
     expect_equal(v2_lagged[], v[1:3])
 
+    v2_lagged[1]
+    v2_lagged[1, drop = TRUE]
+    v2_lagged[1, drop = FALSE]
+    v2_lagged[1,]
+    v2_lagged[1, , drop = TRUE]
+    v2_lagged[1, , drop = FALSE]
+
+    v2_lagged[ , 1]
+
     m2_lagged <- m_lagged
     maxLag(m2_lagged) <- 2
     expect_equal(maxLag(m2_lagged), 2)
@@ -142,7 +194,8 @@ test_that("Lagged classes: indexing",
     expect_equal(maxLag(a2_lagged), 2)
     expect_equal(a2_lagged[], a[, , 1:3])
 
-
+    maxLag(acf(AirPassengers))
+    expect_error(maxLag(sin), "No applicable method to compute maxLag")
 
 })
 
@@ -188,8 +241,9 @@ test_that("Lagged classes: initialisation",
     ## cars is a data.frame
     expect_error(Lagged(cars), "I don't know how to create a Lagged object from the given data")
 
-
-
+    z <- ts(matrix(rnorm(300), 100, 3), start = c(1961, 1), frequency = 12)
+    acf2Lagged(acf(z))
+    acf2Lagged(acf(z, type = "partial"))
 
 })
 

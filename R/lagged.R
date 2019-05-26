@@ -265,7 +265,7 @@ setAs("Lagged", "array",  function(from) as.array(from) )
 
 maxLag <- function(object, ...){
    if(inherits(object, "acf"))
-       dim(acf$acf)[1] - 1
+       dim(object$acf)[1] - 1
    else
        stop("No applicable method to compute maxLag")
 }

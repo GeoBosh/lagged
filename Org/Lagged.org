@@ -533,7 +533,7 @@ other cases it raises an error. Notice that in "acf" the lag is in the first dim
 #+BEGIN_SRC R
 maxLag <- function(object, ...){
    if(inherits(object, "acf"))
-       dim(acf$acf)[1] - 1
+       dim(object$acf)[1] - 1
    else
        stop("No applicable method to compute maxLag")
 }
