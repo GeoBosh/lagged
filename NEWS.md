@@ -1,3 +1,7 @@
+# lagged 0.3-0 (CRAN)
+
+* update the vignette.
+
 # lagged 0.2-2
 
 * added the missing `show()` method for `Lagged2d` objects.
@@ -25,7 +29,6 @@
   where `d` is the number of seasons and the second index, `j`, in
   `0:maxlag`. As for matrices, an empty index designates the whole range in the
   corresponding extent.
-
 
 
 # lagged 0.2-1

@@ -17,4 +17,5 @@
 ^tests/testthat/[.]RData$
 
 ^_pkgdown\.yml$
+.travis.yml
 ^docs$
