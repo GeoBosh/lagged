@@ -1,3 +1,8 @@
+# lagged 0.3-1
+
+* improve handling of `"[["` for `Lagged2d` objects.
+
+
 # lagged 0.3-0 (CRAN)
 
 * update the vignette.

@@ -47,7 +47,10 @@ test_that("Lagged classes: indexing",
 
     expect_true(!is.null(mm_lagged[1:2, 0:3])) # ok, a matrix
     ## but the first arg. of '[[' must be of length one, so this throws error:
-    expect_error(mm_lagged[[1:2 , 0:3]])
+    expect_error(mm_lagged[[1:2 , 0:3]], "the length of argument `i' must be equal to one")
+
+    expect_identical(mm_lagged[[0]], mm_lagged[[ , 0]])
+    expect_error(mm_lagged[[ , 0:3]], "the length of argument `j' must be equal to one")
 
     ## currently no "[" method for "logical"
     ## TODO: maybe add one for symmetry with '[['?

@@ -139,6 +139,25 @@ setReplaceMethod("[[", c(x = "Lagged", i = "numeric"),
                      x
                  })
 
+setMethod("[[", c(x = "Lagged2d", i = "numeric", j = "missing"),
+          function(x, i, j){
+              if(length(i) == 1){
+                  if(nposargs(sys.call(-1)) == 2) # x[i] - note the use of -1 in sys.call()
+                      x@data[ , i + 1, drop = TRUE]
+                  else             # x[i, ]
+                      x@data[i, , drop = TRUE]
+              }else
+                  stop("the length of argument `i' must be equal to one")
+          }
+          )
+setMethod("[[", c(x = "Lagged2d", i = "missing", j = "numeric"),
+          function(x, i, j){
+              if(length(j) == 1){
+                      x@data[ , j + 1, drop = TRUE]
+              }else
+                  stop("the length of argument `j' must be equal to one")
+          }
+          )
 setMethod("[[", c(x = "Lagged2d", i = "numeric", j = "numeric"),
           function(x, i, j){
               if(length(i) == 1)
