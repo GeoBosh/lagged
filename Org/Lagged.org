@@ -245,8 +245,23 @@ setMethod("[[", c(x = "Lagged", i = "numeric", j = "missing"),
           )
 
 setMethod("[[", c(x = "FlexibleLagged", i = "ANY", j = "ANY"),
-          function(x, i, j)
+          function(x, i, j){
               x@data[[i, j]]
+          }
+          )
+setMethod("[[", c(x = "FlexibleLagged", i = "missing", j = "numeric"),
+          function(x, i, j){
+              x@data[[ , j]]
+          }
+          )
+setMethod("[[", c(x = "FlexibleLagged", i = "numeric", j = "missing"),
+          function(x, i, j){
+browser()
+              if(nposargs(sys.call(-1)) == 2) # x[[i]]
+                  x@data[[i]]
+              else # x[i, ]
+                  x@data[[i, ]]
+          }
           )
 #+END_SRC
 Note the use of ~drop = TRUE~.
