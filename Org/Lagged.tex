@@ -1,4 +1,4 @@
-% Created 2019-05-16 Thu 16:06
+% Created 2019-05-29 Wed 10:22
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt,a4paper]{article}
 	      \usepackage[left=1.8cm,right=1.8cm,top=2cm,bottom=2cm]{geometry}
@@ -41,7 +41,7 @@ file:
 
 
 \section{Class "Lagged"}
-\label{sec:orgc371a54}
+\label{sec:orgfa847ad}
 
 
 "Lagged" is the base lagged class. It is virtual and defines a slot \texttt{data} from class
@@ -139,19 +139,21 @@ defined for "Lagged".
 Lagged? For now putting some code in \texttt{Lagged()} to accept "acf" objects.
 
 \subsection{Core methods for lagged objects}
-\label{sec:orge6d2c91}
+\label{sec:org5157877}
 
 The methods in this section are ok for objects inheriting from "Lagged". Where
 necessary, specialised methods are defined for "FlexibleLagged".
 
 
 \subsubsection{Subscripting with "["}
-\label{sec:org4ec62a3}
+\label{sec:org677e7b4}
 
 Subscripting with \texttt{i} missing, returns the raw data.
 \begin{verbatim}
 setMethod("[", c(x = "Lagged", i = "missing"), function(x) x@data )
-setMethod("[", c(x = "FlexibleLagged", i = "missing"), function(x) x@data[] )
+setMethod("[", c(x = "FlexibleLagged", i = "missing", j = "missing"), function(x) x@data[] )
+setMethod("[", c(x = "FlexibleLagged", i = "missing", j = "ANY"), 
+          function(x, i, j, ..., drop) x@data[ , j, ..., drop] )
 \end{verbatim}
 
 When \texttt{i} is present, indexing depends on the type of the data slot and so is defined by
@@ -169,18 +171,26 @@ I created separate methods for \texttt{drop} since just omitting it from the met
 \texttt{findMethods("FlexibleLagged")} shows that the default for drop in the method is \texttt{TRUE}).
 \begin{verbatim}
 setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "missing"), 
-          function(x, i, ...)
-              x@data[i, ..., drop = FALSE] 
+          function(x, i, ..., drop = FALSE){
+#browser()
+              if(nargs() == 2)
+                  x@data[i] 
+              else
+                  x@data[i, ] 
+          }
           )
 setMethod("[", c(x = "FlexibleLagged", i = "numeric", j = "missing", drop = "logical"), 
-          function(x, i, ..., drop)
-              x@data[i, ..., drop = drop] 
+          function(x, i, ..., drop = FALSE)
+              if(nargs() == 3)
+                  x@data[i, drop = drop] 
+              else
+                  x@data[i, , drop = drop] 
           )
 \end{verbatim}
 
 
 \subsubsection{Subscript-replacement with "[<-"}
-\label{sec:org06e120a}
+\label{sec:orgaba311f}
 
 Similarly to "[", subscript-replacement "[<-" replaces the contents of the data.  The method
 for "Lagged" does not check the validity of argument \texttt{value} but the assignment will
@@ -244,7 +254,7 @@ setReplaceMethod("[", c(x = "FlexibleLagged", i = "numeric"),
 
 
 \subsubsection{Methods for "[[" and "[[<-"}
-\label{sec:org24a9d23}
+\label{sec:org45bda62}
 
 Indexing with "[[" returns the value for the specified lag. This is the recommended way to
 extract the value at a single index.
@@ -253,20 +263,40 @@ This defines a default method. For efficiency specific classes can define versio
 calling the generic "[[". If multi-seasons are supported the check for length equal to one
 should be adapted accordingly.
 \begin{verbatim}
-setMethod("[[", c(x = "Lagged", i = "numeric"),
-          function(x, i){
+setMethod("[[", c(x = "Lagged", i = "numeric", j = "missing"),
+          function(x, i, j){
               if(length(i) == 1)
                   x[i, drop = TRUE]
               else
-                  stop("length of argument `i' must be equal to one")
+                  stop("the length of argument `i' must be equal to one")
+          }
+          )
+
+setMethod("[[", c(x = "FlexibleLagged", i = "ANY", j = "ANY"),
+          function(x, i, j){
+              x@data[[i, j]]
+          }
+          )
+setMethod("[[", c(x = "FlexibleLagged", i = "missing", j = "numeric"),
+          function(x, i, j){
+              x@data[[ , j]]
+          }
+          )
+setMethod("[[", c(x = "FlexibleLagged", i = "numeric", j = "missing"),
+          function(x, i, j){
+              if(nposargs(sys.call(-1)) == 2) # x[[i]]
+                  x@data[[i]]
+              else # x[i, ]
+                  x@data[[i, ]]
           }
           )
 \end{verbatim}
 Note the use of \texttt{drop = TRUE}.
-
-
 \textbf{TODO:} The use of \texttt{drop = TRUE} maybe needs some further thought. Maybe something that drops
 only the index corresponding to the lag is preferable and such behaviour should be documented!
+
+\textbf{Note:} After more thought, \texttt{drop = TRUE} is excellent for "[[" and could be used in more
+    circumstances. 
 
 The replace method works similarly:
 \begin{verbatim}
@@ -275,15 +305,69 @@ setReplaceMethod("[[", c(x = "Lagged", i = "numeric"),
                      if(length(i) == 1)
                          x[i] <- value
                      else
-                         stop("length of argument `i' must be equal to one")
+                         stop("the length of argument `i' must be equal to one")
                      x
                  })
 \end{verbatim}
 
 
+For "Lagged2d" define further methods. When \texttt{j} is present the indexing is matrix-like with
+\texttt{drop = TRUE}. For now restrict this to the case when \texttt{i} is a single number (but \texttt{j} can be
+a vector). 
+
+\textbf{TODO:} It is probably imperative here to distinguish \texttt{x[[i,] ]} and \texttt{x[[i] ]}
+(but this should be done in the method with missing \texttt{j}).
+\textbf{Done:} Here \texttt{nargs() can't distinguish \textasciitilde{}x[i]} and \texttt{x[i,]}, roughly because \texttt{sys.call()} is
+\texttt{.local(x, i, j, ...)}, due to the way S4 methods work. So I use \texttt{nposargs()}. (\textbf{TODO:} think
+about more efficient version of \texttt{nposargs()}?)
+
+Note that \texttt{x[[i] ]} is identical to \texttt{x[[ , i] ]}. So, the second definition is technically
+redundant. It is there for user's convenience and to avoid an obscure error message
+(incidentally, it is currently somewhat more efficient).
+\begin{verbatim}
+setMethod("[[", c(x = "Lagged2d", i = "numeric", j = "missing"),
+          function(x, i, j){
+              if(length(i) == 1){
+                  if(nposargs(sys.call(-1)) == 2) # x[i] - note the use of -1 in sys.call()
+                      x@data[ , i + 1, drop = TRUE]
+                  else             # x[i, ]
+                      x@data[i, , drop = TRUE]
+              }else
+                  stop("the length of argument `i' must be equal to one")
+          }
+          )
+setMethod("[[", c(x = "Lagged2d", i = "missing", j = "numeric"),
+          function(x, i, j){
+              if(length(j) == 1){
+                      x@data[ , j + 1, drop = TRUE]
+              }else
+                  stop("the length of argument `j' must be equal to one")
+          }
+          )
+setMethod("[[", c(x = "Lagged2d", i = "numeric", j = "numeric"),
+          function(x, i, j){
+              if(length(i) == 1)
+                  x@data[i, j + 1, drop = TRUE]
+              else
+                  stop("the length of argument `i' must be equal to one")
+          }
+          )
+setMethod("[[", c(x = "Lagged2d", i = "numeric", j = "logical"),
+          function(x, i, j){
+              if(length(i) == 1)
+                  x@data[i, j, drop = TRUE]
+              else
+                  stop("the length of argument `i' must be equal to one")
+          }
+          )
+\end{verbatim}
+
+
+
+
 
 \subsubsection{Arithmetic and other operations (Ops group)}
-\label{sec:org0a34409}
+\label{sec:org86c31c2}
 
 Operations in the \texttt{Ops} group involving lagged objects are defined "naturally" on their
 data. However, they are more restrictive than base R's conventions for atomic objects and do
@@ -325,7 +409,7 @@ operation.
 
 \begin{enumerate}
 \item "Ops" involving "Lagged"
-\label{sec:org49c6a69}
+\label{sec:org83c8cc5}
 
 The unary operators preserve the class of the object:
 \begin{verbatim}
@@ -416,7 +500,7 @@ setMethod("Ops", c(e1 = "vector", e2 = "Lagged"),
 
 
 \item "Ops" involving "FlexibleLagged"
-\label{sec:org2bdf302}
+\label{sec:org4838c8a}
 
 Operations involving "FlexibleLagged" objects use those defined for "Lagged" by operating on
 the data slot (which is "Lagged").
@@ -454,7 +538,7 @@ subclasses, like "Lagged2d".
 
 
 \subsubsection{"Math" and "Math2" group methods}
-\label{sec:org5b96f3e}
+\label{sec:org333a640}
 
 "Math" and "Math2" methods return the object with its data part transformed by the
 corresponding function. 
@@ -479,7 +563,7 @@ setMethod("Math2", c(x = "Lagged"),
 
 
 \subsubsection{"Summary" group methods}
-\label{sec:org6d0781c}
+\label{sec:orgeb8e692}
 
 The "Summary" methods operate on the data part of the "Lagged" object.
 \begin{verbatim}
@@ -491,7 +575,7 @@ setMethod("Summary", c(x = "Lagged"),
 
 
 \subsection{S3 methods for as.vector() and related functions for "Lagged"}
-\label{sec:org0d28112}
+\label{sec:orgaa40c0d}
 
 \begin{verbatim}
 ## TODO: check if the S3 methods understand S4 inheritance (I think they do)
@@ -512,7 +596,7 @@ as.array.Lagged3d  <- function(x, ...) x@data
 
 
 \subsection{setAs() methods for "Lagged"}
-\label{sec:org5b4aa19}
+\label{sec:org1436e9d}
 
 These methods call the corresponding S3 methods defined above:
 \begin{verbatim}
@@ -524,14 +608,14 @@ setAs("Lagged", "array",  function(from) as.array(from) )
 
 
 \subsection{Generic function maxLag()}
-\label{sec:orgc12a672}
+\label{sec:org4f09cdf}
 
 The default method for \texttt{maxLag()} handles objects inheriting from S3 class "acf". In all
 other cases it raises an error. Notice that in "acf" the lag is in the first dimension.
 \begin{verbatim}
 maxLag <- function(object, ...){
    if(inherits(object, "acf"))
-       dim(acf$acf)[1] - 1
+       dim(object$acf)[1] - 1
    else
        stop("No applicable method to compute maxLag")
 }
@@ -583,7 +667,7 @@ setMethod("maxLag", c(object = "Lagged"), function(object) maxLag(object@data) )
 
 
 \subsection{Length of "Lagged" objects - S3 method for length()}
-\label{sec:org68a3c70}
+\label{sec:orgef70436}
 
 The length of "Lagged" objects is defined to be \texttt{maxLag(x)+1}, not the length of the data in
 the "Lagged" object. In most cases of direct use \texttt{maxLag(x)} is more appropriate.
@@ -599,7 +683,7 @@ length.Lagged <- function(x) maxLag(x) + 1
 
 
 \section{Methods for "["}
-\label{sec:org472d3cf}
+\label{sec:orgfad224c}
 
 \begin{verbatim}
 setMethod("[", c(x = "Lagged1d", i = "numeric"),
@@ -618,16 +702,145 @@ setMethod("[", c(x = "Lagged1d", i = "numeric"),
     Need some thought to streamline that old stuff. However, it may be better not to put this on
     \texttt{"Lagged2d"} but introduce subclass, say \texttt{"LaggedSL" of ="Lagged2d"} and define modified
     methods for that, streamlining in the process.
-\begin{verbatim}
-setMethod("[", c(x = "Lagged2d", i = "numeric"),
-          function(x, i, ..., drop = FALSE) x@data[ , i+1, drop = drop] )
+    (\textbf{NOTE:} mostly done, see below.)   
 
-setMethod("[", c(x = "Lagged3d", i = "numeric"),
+2019-05-18: New "[" methods for "Lagged2d". Decided to use argument \texttt{drop} for the argument
+corresponding to \texttt{type} in "slMatrix". 
+
+2019-05-25: Decided eventually to handle the difference between \texttt{x[i]} and \texttt{x[i,]}, since
+otherwise confusion arises.  Both go to the methods with \texttt{j} missing. The complete solution
+is with \texttt{gbutils::nposargs()}). It is used when drop is logical. When drop is missing, it is
+sufficient to use \texttt{nargs()} and avoid additional overhead for the most common case, \texttt{x[i]}.
+\begin{verbatim}
+setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "missing"),
+          function(x, i, ..., drop = FALSE){
+              if(nargs() == 2)              # x[i]
+                  x@data[ , i+1, drop = FALSE] 
+              else                          # x[i, ]
+                  x@data[i, , drop = FALSE] 
+          }
+          )
+
+setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "logical"),
+          function(x, i, ..., drop = FALSE){
+              if(nposargs(sys.call()) == 2) # x[i]
+                  x@data[ , i+1, drop = drop]
+              else                          # x[i, ]
+                  x@data[i, , drop = drop]
+          } 
+          )
+\end{verbatim}
+
+Non-missing \texttt{j}. 
+\begin{verbatim}
+setMethod("[", c(x = "Lagged2d", i = "numeric", j = "numeric", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[i, j + 1, drop = FALSE]
+          )
+setMethod("[", c(x = "Lagged2d", i = "missing", j = "numeric", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[ , j + 1, drop = FALSE]
+          )
+\end{verbatim}
+This implements (part of?) the functionality of "slMatrix" indexing. I decided to 
+use argument \texttt{drop}, even though it is generally not a good idea to overload an argument
+designed for another purpose. However, from a more general perspective, \texttt{drop} controls the
+shape of the result. 
+\begin{verbatim}
+setMethod("[", c(x = "Lagged2d", i = "ANY", j = "ANY", drop = "character"),
+          ## vedry old code, modelled after the method for 'slMatrix'
+          function(x, i, j, ..., drop = "sl"){  
+              ## for now, don't write about this method in the documentation;
+              ## it will certainly change
+
+              y <- x@data
+              period <- nrow(y)
+              if(missing(i))
+                  i <- 1:nrow(y)
+              if(missing(j))
+                  j <- 0:maxLag(x)
+
+              ## TODO: should set 'drop = FALSE' when extracting below but keep it for now in
+              ##    case old code depends on the current. In particular this is almost
+              ##    certainly so when extracting single values.
+              switch(drop,
+                     ## "sl" is for completeness, it is the default without this method
+                     "sl" = {
+                         season <- i
+                         lag <- pc.omitneg(j, ncol(x)-1)
+                         res <- y[season, lag+1]   # lag+1 because lags start from zero
+                     },
+                     "tt" = {
+                         res <- myouter(i, j, function(ii, jj){
+                             wrk <- toSeasonPair(ii, jj, period)
+                             season <- wrk$season
+                             lag <- wrk$lag
+                             y[season, lag + 1]
+                         }
+                         )
+                     },
+                     "tl" = {
+                         season <- toSeason(i, period)
+                         lag <- j
+                         res <- y[season, lag + 1]      # lag+1 because lags start from zero.
+                     },
+                     "tl+-" = {
+                         if(length(j) == 1){
+                             if(j>=0){                   # this works only for scalar  j
+                                 season <- toSeason(i, period)
+                                 lag <- j
+                             }else{
+                                 season <- toSeason(i - j, period)
+                                 lag <- -j
+                             }
+                             res <- y[season, lag+1] # lag+1 because lags start from zero.
+                         }else{
+                             res <- matrix(NA, nrow = length(i), ncol = length(j))
+                             for(k in 1:length(j)){
+                                 if(j[k] >= 0){         # this works only for scalar  j
+                                     season <- toSeason(i, period)
+                                     lag <- j[k]
+                                 }else{
+                                     season <- toSeason(i - j[k], period)
+                                     lag <- -j[k]
+                                 }
+                                 res[ , k] <- y[season, lag+1]#lag+1 as lags start from zero.
+                             }
+                         }
+                     },
+                     "t+l,l+-" = {
+                         res <- matrix(NA, nrow = length(i), ncol = length(j))
+                         for(k in 1:length(j)){
+                             res[ , k] <- x[i + j[k], j[k], drop = "tl+-"]
+                         }
+                     },
+                     ## 2016-01-01 TODO: case "co" seems to be meant for j - scalar.
+                     "co" = {
+                         season <- toSeason(i, period)
+                         lag <- j
+                         if(lag < 0 || lag > maxLag(x) )
+                             res <- 0
+                         else{
+                             res <- y[season, lag + 1] # lag+1 because lags start from zero.
+                         }
+                     },
+                     stop("Invalid arg. type, must be one of \"sl\", \"tt\" or \"tl\".")
+                     )
+              res
+          }
+          )
+\end{verbatim}
+
+
+\begin{verbatim}
+setMethod("[", c(x = "Lagged3d", i = "numeric", j = "missing", drop = "missing"),
+          function(x, i, ..., drop = FALSE) x@data[, , i+1, drop = FALSE] )
+setMethod("[", c(x = "Lagged3d", i = "numeric", j = "missing", drop = "logical"),
           function(x, i, ..., drop = FALSE) x@data[, , i+1, drop = drop] )
 \end{verbatim}
 
 \subsection{whichLagged()}
-\label{sec:org5e1ae2d}
+\label{sec:org79ef637}
 
 For now \texttt{whichLagged()} is not exported. It could be exported to allow core "Lagged" classes
 defined in other packages to add functionality. But if it is to be exported, it would need
@@ -659,7 +872,7 @@ setMethod("whichLagged", c(x = "Lagged3d", y = "missing"), function(x) "Lagged3d
 
 
 \subsection{Methods for "[<-"}
-\label{sec:org27b9a04}
+\label{sec:org6334117}
 
 Missing index is equivalent to replacing all data: 
 \begin{verbatim}
@@ -698,7 +911,7 @@ setReplaceMethod("[", c(x = "Lagged3d", i = "numeric"),
 
 
 \section{show() methods}
-\label{sec:org1ca5f3c}
+\label{sec:org26c9eed}
 
 \begin{verbatim}
 ## .printVecOrArray <- function(x){
@@ -795,7 +1008,7 @@ setMethod("show", "FlexibleLagged",
 
 
 \section{Further constructors for lagged objects}
-\label{sec:org0ce69ec}
+\label{sec:org0ce2bb8}
 
 Function \texttt{new()} can be used to create objects from the lagged classes.
 In this section we define some functions to make this more convenient.
@@ -854,7 +1067,7 @@ Lagged <- function(data, ...){
 
 
 \section{New}
-\label{sec:org8e6c5d3}
+\label{sec:org269ad87}
 
 The functions in this section are temporarily here during development and should be move to
 more appropriate places eventually.
