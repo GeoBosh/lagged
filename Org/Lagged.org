@@ -256,7 +256,6 @@ setMethod("[[", c(x = "FlexibleLagged", i = "missing", j = "numeric"),
           )
 setMethod("[[", c(x = "FlexibleLagged", i = "numeric", j = "missing"),
           function(x, i, j){
-browser()
               if(nposargs(sys.call(-1)) == 2) # x[[i]]
                   x@data[[i]]
               else # x[i, ]
