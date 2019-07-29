@@ -14,7 +14,7 @@ natural indexing starts from zero.
 
 The [[https://cran.r-project.org/package=lagged][latest stable version]] is on CRAN. 
 #+BEGIN_EXAMPLE
-install_packages("lagged")
+install.packages("lagged")
 #+END_EXAMPLE
 The vignette shipping with the package gives illustrative examples.
 =vignette("Guide_lagged", package = "lagged")=.
