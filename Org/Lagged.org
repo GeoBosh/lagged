@@ -1076,6 +1076,7 @@ test_that("Lagged classes: indexing",
 *** Lagged1d
 
 #+BEGIN_SRC R  :tangle ../tests/testthat/test-Lagged.R
+
     ## Lagged1d
     v <- 1:12
     v_lagged <- Lagged(v)
