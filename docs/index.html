@@ -9,7 +9,7 @@
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Classes and Methods for Lagged Objects">
 <meta property="og:description" content="Provides classes and methods for lagged objects.">
 <meta name="twitter:card" content="summary">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">lagged</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -66,6 +66,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="contents col-md-9">
 
@@ -75,42 +76,42 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#installing-lagged" class="anchor"></a>Installing lagged</h1></div>
 <p>The <a href="https://cran.r-project.org/package=lagged">latest stable version</a> is on CRAN.</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">install_packages</span>(<span class="st">"lagged"</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"lagged"</span>)</a></code></pre></div>
 <p>The vignette shipping with the package gives illustrative examples. <code>vignette("Guide_lagged", package = "lagged")</code>.</p>
 <p>You can install the <a href="https://github.com/GeoBosh/lagged">development version</a> of <code>lagged</code> from Github:</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)
-<span class="kw">install_github</span>(<span class="st">"GeoBosh/lagged"</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"GeoBosh/lagged"</span>)</a></code></pre></div>
 </div>
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
 <p>The package provides several classes with methods for indexing starting from zero. Objects can be created with the function <code><a href="reference/Lagged.html">Lagged()</a></code>. It returns a suitable Lagged object from a class suitable for the argument:</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(lagged)
-v_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)                           <span class="co"># 1d object</span>
-m_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">12</span>, <span class="dt">nrow =</span> <span class="dv">4</span>))        <span class="co"># 2d object</span>
-a_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/array.html">array</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">24</span>, <span class="dt">dim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">2</span>)))  <span class="co"># 3d object</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(lagged)</a>
+<a class="sourceLine" id="cb3-2" title="2">v_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)                           <span class="co"># 1d object</span></a>
+<a class="sourceLine" id="cb3-3" title="3">m_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">12</span>, <span class="dt">nrow =</span> <span class="dv">4</span>))        <span class="co"># 2d object</span></a>
+<a class="sourceLine" id="cb3-4" title="4">a_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/array.html">array</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">24</span>, <span class="dt">dim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">2</span>)))  <span class="co"># 3d object</span></a></code></pre></div>
 <p>It recognises also <code>"acf"</code> objects from base R time series functions:</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">ap_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/acf.html">acf</a></span>(AirPassengers, <span class="dt">plot =</span> <span class="ot">FALSE</span>))</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">ap_lagged &lt;-<span class="st"> </span><span class="kw"><a href="reference/Lagged.html">Lagged</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/acf.html">acf</a></span>(AirPassengers, <span class="dt">plot =</span> <span class="ot">FALSE</span>))</a></code></pre></div>
 <p>The maximal lag stored in the object can be obtained with <code><a href="reference/maxLag.html">maxLag()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw"><a href="reference/maxLag.html">maxLag</a></span>(v_lagged)
-<span class="kw"><a href="reference/maxLag.html">maxLag</a></span>(m_lagged)
-<span class="kw"><a href="reference/maxLag.html">maxLag</a></span>(a_lagged)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="reference/maxLag.html">maxLag</a></span>(v_lagged)</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw"><a href="reference/maxLag.html">maxLag</a></span>(m_lagged)</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="kw"><a href="reference/maxLag.html">maxLag</a></span>(a_lagged)</a></code></pre></div>
 <p>The length of the objects is equal to <code>maxlag(object) + 1</code>.</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(v_lagged)
-<span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(m_lagged)
-<span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(a_lagged)</code></pre></div>
-<p>Subsetting with <code>"["</code> drops the laggedness and returns vector, matrix, or array, depending on the dimension of the object. Subsetting with one index gives the data for the requested lags:</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">tmp &lt;-<span class="st"> </span>v_lagged[<span class="dv">0</span><span class="op">:</span><span class="dv">2</span>]
-tmp &lt;-<span class="st"> </span>m_lagged[<span class="dv">0</span><span class="op">:</span><span class="dv">2</span>]
-tmp &lt;-<span class="st"> </span>a_lagged[<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>]</code></pre></div>
-<p>Values beyond the maximal lag are <code>NA</code>. Dimensions are not dropped if an extent has length one (i.e. <code>drop = FALSE</code>):</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">v_lagged[<span class="dv">0</span>]
-m_lagged[<span class="dv">0</span>]
-a_lagged[<span class="dv">0</span>]</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(v_lagged)</a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(m_lagged)</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(a_lagged)</a></code></pre></div>
+<p>Subsetting with <code><a href="https://rdrr.io/r/base/Extract.html">"["</a></code> drops the laggedness and returns vector, matrix, or array, depending on the dimension of the object. Subsetting with one index gives the data for the requested lags:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">tmp &lt;-<span class="st"> </span>v_lagged[<span class="dv">0</span><span class="op">:</span><span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb7-2" title="2">tmp &lt;-<span class="st"> </span>m_lagged[<span class="dv">0</span><span class="op">:</span><span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb7-3" title="3">tmp &lt;-<span class="st"> </span>a_lagged[<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>]</a></code></pre></div>
+<p>Values beyond the maximal lag are <code>NA</code>. Dimensions are not dropped if an extent has length one (i.e. <code>drop = FALSE</code>):</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">v_lagged[<span class="dv">0</span>]</a>
+<a class="sourceLine" id="cb8-2" title="2">m_lagged[<span class="dv">0</span>]</a>
+<a class="sourceLine" id="cb8-3" title="3">a_lagged[<span class="dv">0</span>]</a></code></pre></div>
 <p>To drop dimensions, use “[[”:</p>
-<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">v_lagged[[<span class="dv">0</span>]]
-m_lagged[[<span class="dv">0</span>]]
-a_lagged[[<span class="dv">0</span>]]</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">v_lagged[[<span class="dv">0</span>]]</a>
+<a class="sourceLine" id="cb9-2" title="2">m_lagged[[<span class="dv">0</span>]]</a>
+<a class="sourceLine" id="cb9-3" title="3">a_lagged[[<span class="dv">0</span>]]</a></code></pre></div>
 <p>Arithmetic operations and mathematical functions are defined naturally on lagged objects. The shorter one is extended with <code>NA</code>’s to the length of the longer.</p>
 <p>Operations between lagged and base R objects are defined, as well. However, it is an error to do operations between objects whose dimensions do not match, unless the base R object is a scalar, or, more generally, has the size of <code>x[[0] ]</code>.</p>
 </div>
@@ -153,17 +154,20 @@ a_lagged[[<span class="dv">0</span>]]</code></pre></div>
 </div>
 </div>
 
+
       <footer><div class="copyright">
   <p>Developed by Georgi N. Boshnakov.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
