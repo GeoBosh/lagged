@@ -1091,7 +1091,8 @@ test_that("Lagged classes: indexing",
     expect_equal(Lagged(1:4) + 1, Lagged(1:4 + 1))
     expect_error(Lagged(1:4) + 1:2, "Incompatible length of operands in a binary operation")
 
-    v_lagged[] <- 3
+    vA_lagged <- v_lagged
+    vA_lagged[] <- 3
     
 #+END_SRC
 
@@ -1110,9 +1111,10 @@ test_that("Lagged classes: indexing",
     expect_equal(m_lagged[0],   m_lagged[0, drop = FALSE])
     expect_equal(m_lagged[[0]], m_lagged[0, drop = TRUE])
 
-    m_lagged[[1]] <- 15:18
-    expect_equal(m_lagged[[1]], 15:18)
-    expect_equal(m_lagged[1], matrix(15:18, ncol = 1))
+    m_laggedA <- m_lagged
+    m_laggedA[[1]] <- 15:18
+    expect_equal(m_laggedA[[1]], 15:18)
+    expect_equal(m_laggedA[1], matrix(15:18, ncol = 1))
 
     tmp <- m_lagged
     expect_error(tmp[[1:2]] <- 15:18, "the length of argument .i. must be equal to one")
