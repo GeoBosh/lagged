@@ -61,6 +61,10 @@ test_that("slMatrix",
     expect_equal(msl[1, -2, type = "co"], 0)
 
     expect_output(msl[1, -2, type = "co"] <- 5555, "attempt to assign a coefficient value at negative/large index")
-    expect_error(nSeasons(msl) <- 5, "unable to find an inherited method for function 'nSeasons<-'")
+    
+    ## This gives error in package "covr", it seems that it doesn't treats the string as
+    ## regular expression and tries exact match.
+    ##     expect_error(nSeasons(msl) <- 5, "unable to find an inherited method for function 'nSeasons<-'")
+    expect_error(nSeasons(msl) <- 5, "unable to find an inherited method for function")
 
 })
