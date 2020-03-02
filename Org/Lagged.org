@@ -694,6 +694,30 @@ setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "logical")
           )
 #+END_SRC
 
+2020-03-02 Adding methods for character ~i~ for ="Lagged2d"= with the same semantics as the
+above ="numeric"= methods. 
+#+BEGIN_SRC R
+setMethod("[", c(x = "Lagged2d", i = "character", j = "missing", drop = "missing"),
+          function(x, i, ..., drop = FALSE){
+              if(nargs() == 2)              # x[i]
+                  ## no need (and can't) to add one here
+                  x@data[ , i, drop = FALSE] 
+              else                          # x[i, ]
+                  x@data[i, , drop = FALSE] 
+          }
+          )
+
+setMethod("[", c(x = "Lagged2d", i = "character", j = "missing", drop = "logical"),
+          function(x, i, ..., drop = FALSE){
+              if(nposargs(sys.call()) == 2) # x[i]
+                  x@data[ , i, drop = drop]
+              else                          # x[i, ]
+                  x@data[i, , drop = drop]
+          } 
+          )
+#+END_SRC
+
+
 Non-missing ~j~. 
 #+BEGIN_SRC R
 setMethod("[", c(x = "Lagged2d", i = "numeric", j = "numeric", drop = "missing"),
@@ -705,13 +729,36 @@ setMethod("[", c(x = "Lagged2d", i = "missing", j = "numeric", drop = "missing")
               x@data[ , j + 1, drop = FALSE]
           )
 #+END_SRC
+
+#+BEGIN_SRC R
+setMethod("[", c(x = "Lagged2d", i = "character", j = "numeric", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[i, j+1, drop = FALSE]
+          )
+setMethod("[", c(x = "Lagged2d", i = "character", j = "character", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[i, j, drop = FALSE]
+          )
+setMethod("[", c(x = "Lagged2d", i = "numeric", j = "character", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[i, j, drop = FALSE]
+          )
+setMethod("[", c(x = "Lagged2d", i = "missing", j = "character", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[ , j, drop = FALSE]
+          )
+#+END_SRC
+
+
+
+
 This implements (part of?) the functionality of "slMatrix" indexing. I decided to 
 use argument ~drop~, even though it is generally not a good idea to overload an argument
 designed for another purpose. However, from a more general perspective, ~drop~ controls the
 shape of the result. 
 #+BEGIN_SRC R
 setMethod("[", c(x = "Lagged2d", i = "ANY", j = "ANY", drop = "character"),
-          ## vedry old code, modelled after the method for 'slMatrix'
+          ## very old code, modelled after the method for 'slMatrix'
           function(x, i, j, ..., drop = "sl"){  
               ## for now, don't write about this method in the documentation;
               ## it will certainly change
@@ -1101,7 +1148,20 @@ test_that("Lagged classes: indexing",
 
 #+BEGIN_SRC R  :tangle ../tests/testthat/test-Lagged.R
     ## Lagged2d
-    m <- matrix(1:12, nrow = 4)
+    m1 <- m <- matrix(1:12, nrow = 4)
+    rownames(m1) <- LETTERS[1:4]
+    colnames(m1) <- paste0("Lag_" , 0:2)
+
+
+    m1_lagged <- Lagged(m1)
+    expect_identical(m1_lagged["Lag_0"], m1_lagged[ , "Lag_0"])
+    expect_identical(m1_lagged[1, "Lag_0"], m1_lagged["A", "Lag_0"])
+    expect_identical(m1_lagged[1, ], m1_lagged["A", ])
+    ## m1["A", drop = FALSE] - this is ambiguous is it m1["A", ] or m1["A"] with drop = FALSE?
+    m1_lagged["A", , drop = FALSE] # this is clear
+
+    expect_identical(m1_lagged["A", "Lag_0"], m1_lagged["A", 0])
+
     m_lagged <- Lagged(m)
     expect_identical(m_lagged, new("Lagged2d", data = m))
     expect_equal(dim(m_lagged[0]), c(4, 1))

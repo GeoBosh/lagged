@@ -354,6 +354,25 @@ setMethod("[", c(x = "Lagged2d", i = "numeric", j = "missing", drop = "logical")
           } 
           )
 
+setMethod("[", c(x = "Lagged2d", i = "character", j = "missing", drop = "missing"),
+          function(x, i, ..., drop = FALSE){
+              if(nargs() == 2)              # x[i]
+                  ## no need (and can't) to add one here
+                  x@data[ , i, drop = FALSE] 
+              else                          # x[i, ]
+                  x@data[i, , drop = FALSE] 
+          }
+          )
+
+setMethod("[", c(x = "Lagged2d", i = "character", j = "missing", drop = "logical"),
+          function(x, i, ..., drop = FALSE){
+              if(nposargs(sys.call()) == 2) # x[i]
+                  x@data[ , i, drop = drop]
+              else                          # x[i, ]
+                  x@data[i, , drop = drop]
+          } 
+          )
+
 setMethod("[", c(x = "Lagged2d", i = "numeric", j = "numeric", drop = "missing"),
           function(x, i, j, ..., drop = FALSE)  
               x@data[i, j + 1, drop = FALSE]
@@ -363,8 +382,25 @@ setMethod("[", c(x = "Lagged2d", i = "missing", j = "numeric", drop = "missing")
               x@data[ , j + 1, drop = FALSE]
           )
 
+setMethod("[", c(x = "Lagged2d", i = "character", j = "numeric", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[i, j+1, drop = FALSE]
+          )
+setMethod("[", c(x = "Lagged2d", i = "character", j = "character", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[i, j, drop = FALSE]
+          )
+setMethod("[", c(x = "Lagged2d", i = "numeric", j = "character", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[i, j, drop = FALSE]
+          )
+setMethod("[", c(x = "Lagged2d", i = "missing", j = "character", drop = "missing"),
+          function(x, i, j, ..., drop = FALSE)  
+              x@data[ , j, drop = FALSE]
+          )
+
 setMethod("[", c(x = "Lagged2d", i = "ANY", j = "ANY", drop = "character"),
-          ## vedry old code, modelled after the method for 'slMatrix'
+          ## very old code, modelled after the method for 'slMatrix'
           function(x, i, j, ..., drop = "sl"){  
               ## for now, don't write about this method in the documentation;
               ## it will certainly change

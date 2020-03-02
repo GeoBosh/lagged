@@ -1,11 +1,14 @@
 # lagged 0.3-1
 
-* improve handling of `"[["` for `Lagged2d` objects.
+* improved handling of `"[["` for `Lagged2d` objects.
+
+* for `Lagged2d` objects, added "[" methods for character `i`.
 
 
 # lagged 0.3-0 (CRAN)
 
 * update the vignette.
+
 
 # lagged 0.2-2
 

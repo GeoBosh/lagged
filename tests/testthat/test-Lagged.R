@@ -23,7 +23,20 @@ test_that("Lagged classes: indexing",
     vA_lagged[] <- 3
 
     ## Lagged2d
-    m <- matrix(1:12, nrow = 4)
+    m1 <- m <- matrix(1:12, nrow = 4)
+    rownames(m1) <- LETTERS[1:4]
+    colnames(m1) <- paste0("Lag_" , 0:2)
+
+
+    m1_lagged <- Lagged(m1)
+    expect_identical(m1_lagged["Lag_0"], m1_lagged[ , "Lag_0"])
+    expect_identical(m1_lagged[1, "Lag_0"], m1_lagged["A", "Lag_0"])
+    expect_identical(m1_lagged[1, ], m1_lagged["A", ])
+    ## m1["A", drop = FALSE] - this is ambiguous is it m1["A", ] or m1["A"] with drop = FALSE?
+    m1_lagged["A", , drop = FALSE] # this is clear
+
+    expect_identical(m1_lagged["A", "Lag_0"], m1_lagged["A", 0])
+
     m_lagged <- Lagged(m)
     expect_identical(m_lagged, new("Lagged2d", data = m))
     expect_equal(dim(m_lagged[0]), c(4, 1))
