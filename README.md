@@ -1,4 +1,6 @@
 [![CRANStatusBadge](http://www.r-pkg.org/badges/version/lagged)](https://cran.r-project.org/package=lagged)
+[![R-CMD-check](https://github.com/GeoBosh/lagged/workflows/R-CMD-check/badge.svg)](https://github.com/GeoBosh/lagged/actions)
+[![codecov](https://codecov.io/gh/GeoBosh/lagged/branch/master/graph/badge.svg?token=2SW9HKG71Y)](https://codecov.io/gh/GeoBosh/lagged)
 
 R package 'lagged' provides classes and methods for objects, like autocovariances, whose
 natural indexing starts from zero.
