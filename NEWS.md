@@ -1,4 +1,4 @@
-# lagged 0.3-1
+# lagged 0.3-1 (CRAN)
 
 * made sure that `Lagged` checks early if the argument inherits from
   `"acf"`. This fixes errors in R-devel checks of lagged (R-devel from

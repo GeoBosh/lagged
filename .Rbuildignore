@@ -1,3 +1,5 @@
+^.github/
+^revdep/
 ^README.org
 ^vignettes/.RData
 ^Org/
