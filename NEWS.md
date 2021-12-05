@@ -1,6 +1,11 @@
 # lagged 0.3-1
 
-* remove travis settings.
+* made sure that `Lagged` checks early if the argument inherits from
+  `"acf"`. This fixes errors in R-devel checks of lagged (R-devel from
+  2021-12-03 or earlier), since now `is.vector` gives TRUE for objects from S3
+  class `"acf"`, while previously it returned FALSE.
+
+* removed travis settings.
 
 
 * improved handling of `"[["` for `Lagged2d` objects.

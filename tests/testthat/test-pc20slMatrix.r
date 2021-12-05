@@ -70,7 +70,7 @@ test_that("slMatrix",
     ##              "unable to find an inherited method for function .*nSeasons<-.*")
     ##
     ## but note that each quote is replaced by .* not just . 
-    expect_error(nSeasons(msl) <- 5, "unable to find an inherited method for function 'nSeasons<-'")
+    expect_error(nSeasons(msl) <- 5, "unable to find an inherited method for function .nSeasons<-.")
 
 })
 

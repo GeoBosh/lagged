@@ -640,7 +640,9 @@ acf2Lagged <- function(x){
 }
 
 Lagged <- function(data, ...){
-    if(is.vector(data)){
+    if(inherits(data, "acf")){    # for S3 class "acf"
+        acf2Lagged(data)
+    }else if(is.vector(data)){
         new("Lagged1d", data = data, ...)
     }else if(is.matrix(data)){
         new("Lagged2d", data = data, ...)
@@ -648,8 +650,8 @@ Lagged <- function(data, ...){
         new("Lagged3d", data = data, ...)
     }else if(is(data, "Lagged")){
         new("FlexibleLagged", data = data, ...)
-    }else if(inherits(data, "acf")){    # for S3 class "acf"
-        acf2Lagged(data)
+    ## }else if(inherits(data, "acf")){    # for S3 class "acf"
+    ##     acf2Lagged(data)
     }else
         stop("I don't know how to create a Lagged object from the given data")
 }
