@@ -1,5 +1,8 @@
 # lagged 0.3-1
 
+* remove travis settings.
+
+
 * improved handling of `"[["` for `Lagged2d` objects.
 
 * for `Lagged2d` objects, added "[" methods for character `i`.
