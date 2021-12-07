@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">lagged</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -52,7 +48,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/GeoBosh/lagged/">
+  <a href="https://github.com/GeoBosh/lagged/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -72,19 +68,19 @@
 
 
 <p>R package ‘lagged’ provides classes and methods for objects, like autocovariances, whose natural indexing starts from zero.</p>
-<div id="installing-lagged" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#installing-lagged" class="anchor"></a>Installing lagged</h1></div>
-<p>The <a href="https://cran.r-project.org/package=lagged">latest stable version</a> is on CRAN.</p>
+<div class="section level1">
+<div class="page-header"><h1 id="installing-lagged">Installing lagged<a class="anchor" aria-label="anchor" href="#installing-lagged"></a>
+</h1></div>
+<p>The <a href="https://cran.r-project.org/package=lagged" class="external-link">latest stable version</a> is on CRAN.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">install.packages</span>(<span class="st">"lagged"</span>)</span></code></pre></div>
 <p>The vignette shipping with the package gives illustrative examples. <code>vignette("Guide_lagged", package = "lagged")</code>.</p>
-<p>You can install the <a href="https://github.com/GeoBosh/lagged">development version</a> of <code>lagged</code> from Github:</p>
+<p>You can install the <a href="https://github.com/GeoBosh/lagged" class="external-link">development version</a> of <code>lagged</code> from Github:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(devtools)</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="kw">install_github</span>(<span class="st">"GeoBosh/lagged"</span>)</span></code></pre></div>
 </div>
-<div id="overview" class="section level1">
-<h1 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h1>
+<div class="section level1">
+<h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h1>
 <p>The package provides several classes with methods for indexing starting from zero. Objects can be created with the function <code><a href="reference/Lagged.html">Lagged()</a></code>. It returns a suitable Lagged object from a class suitable for the argument:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(lagged)</span>
 <span id="cb3-2"><a href="#cb3-2"></a>v_lagged &lt;-<span class="st"> </span><span class="kw">Lagged</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)                           <span class="co"># 1d object</span></span>
@@ -120,47 +116,57 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=lagged">https://​cloud.r-project.org/​package=lagged</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/GeoBosh/lagged/">https://​github.com/​GeoBosh/​lagged/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/GeoBosh/lagged/issues">https://​github.com/​GeoBosh/​lagged/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=lagged" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/GeoBosh/lagged/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/GeoBosh/lagged/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>GPL (&gt;= 2)</li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing lagged</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Georgi N. Boshnakov <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=lagged"><img src="http://www.r-pkg.org/badges/version/lagged" alt="CRANStatusBadge"></a></li>
-<li><a href="https://github.com/GeoBosh/lagged/actions"><img src="https://github.com/GeoBosh/lagged/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/GeoBosh/lagged"><img src="https://app.codecov.io/gh/GeoBosh/lagged/branch/master/graph/badge.svg?token=2SW9HKG71Y" alt="codecov"></a></li>
+<li><a href="https://cran.r-project.org/package=lagged" class="external-link"><img src="http://www.r-pkg.org/badges/version/lagged" alt="CRANStatusBadge"></a></li>
+<li><a href="https://github.com/GeoBosh/lagged/actions" class="external-link"><img src="https://github.com/GeoBosh/lagged/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/GeoBosh/lagged" class="external-link"><img src="https://codecov.io/gh/GeoBosh/lagged/branch/master/graph/badge.svg?token=2SW9HKG71Y" alt="codecov"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Georgi N. Boshnakov.</p>
+  <p></p>
+<p>Developed by Georgi N. Boshnakov.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -168,6 +174,8 @@
 
   
 
+
+  
 
   </body>
 </html>
