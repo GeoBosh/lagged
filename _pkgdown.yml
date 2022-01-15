@@ -1,3 +1,7 @@
+url: https://geobosh.github.io/lagged
+
+template:
+  bootstrap: 5
 
 reference:
   - title: Create Lagged objects

@@ -1,3 +1,8 @@
+# lagged 0.3.1.9000
+
+* Minor documentation tweaks.
+
+
 # lagged 0.3-1 (CRAN)
 
 * made sure that `Lagged` checks early if the argument inherits from
@@ -6,7 +11,6 @@
   class `"acf"`, while previously it returned FALSE.
 
 * removed travis settings.
-
 
 * improved handling of `"[["` for `Lagged2d` objects.
 
