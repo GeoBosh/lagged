@@ -37,7 +37,6 @@ jobs:
       - run: tlmgr --version
       - name: Install additional LaTeX packages
           run: |
-      	    tlmgr install ae
 	    tlmgr list --only-installed
       
       - uses: r-lib/actions/setup-r@v2
