@@ -50,6 +50,10 @@ jobs:
         with:
           extra-packages: any::rcmdcheck, any::tinytex
           needs: check
+	run: |
+	  tinytex::parse_install(text = "! LaTeX Error: File `ae.sty' not found.")
 
       - uses: r-lib/actions/check-r-package@v2
+
+
 
