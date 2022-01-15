@@ -2,5 +2,8 @@ pandoc: 2.7.3
 pkgdown: 2.0.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2021-12-07T21:24Z
+last_built: 2022-01-15T09:25Z
+urls:
+  reference: https://geobosh.github.io/lagged/reference
+  article: https://geobosh.github.io/lagged/articles
 
