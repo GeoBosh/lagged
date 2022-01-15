@@ -46,6 +46,10 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
 
-      - uses: r-lib/actions/setup-tinytex@master
-
+      - uses: r-lib/actions/setup-tinytex@v2
+      - run: tlmgr --version
+      - name: Install additional LaTeX packages
+        run: |
+	  tlmgr install ae.sty
+	  tlmgr list --only-installed
 
