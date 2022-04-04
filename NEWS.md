@@ -19,7 +19,7 @@
 
 # lagged 0.3-0 (CRAN)
 
-* update the vignette.
+* updated the vignette.
 
 
 # lagged 0.2-2
