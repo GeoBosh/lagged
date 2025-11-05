@@ -1,4 +1,6 @@
-# lagged 0.3.1.9000
+# lagged 0.3.2 (CRAN)
+
+* Fixed 'LaTeX specials' note from CRAN.
 
 * Minor documentation tweaks.
 
